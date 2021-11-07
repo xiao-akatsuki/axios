@@ -23,6 +23,8 @@ public class HttpRequest {
     public HashMap<String,String> params;
 
     public HashMap<String,String> bodys;
+
+    public int then;
     
     public static Method method;
 
@@ -40,13 +42,11 @@ public class HttpRequest {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        //默认值我GET
+        //默认值GET
         con.setRequestMethod("GET");
         
         //添加请求头
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-        int responseCode = con.getResponseCode();
+        // con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
@@ -59,6 +59,10 @@ public class HttpRequest {
         in.close();
 
         return response.toString();
+    }
+
+    public String then(Object res) {
+        return null;
     }
 
 }

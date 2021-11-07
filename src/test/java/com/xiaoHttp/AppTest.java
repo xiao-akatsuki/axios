@@ -20,8 +20,11 @@ public class AppTest {
 
     @Test
     public void test_get() throws Exception{
-        String a = HttpRequest.get("https://www.baidu.com").then();
-        System.out.println(a);
+        String url = "https://www.boyucode.com/competition/hero/getHero";
+        // String a = HttpRequest.get(url).then();
         
+        Axios.get(url).then(json ->{
+            System.out.println(json);
+        });        
     }
 }
