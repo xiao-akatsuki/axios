@@ -42,6 +42,33 @@ public class Response {
         this.data = data;
     }
 
-    
+    public int getStatus() {
+        return status;
+    }
 
+    public Map<String, List<String>> getHeaders() {
+        return headers;
+    }
+
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status=" + status +
+                ", headers=" + headers +
+                ", statusText='" + statusText + '\'' +
+                ", data='" + data + '\'' +
+                '}';
+    }
 }
