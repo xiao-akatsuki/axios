@@ -1,6 +1,6 @@
-package com.xiaoHttp.core.method;
+package com.xiaoHttp.core.requestMethod;
 
-public enum Method {
+public enum RequestMethod {
 
     GET,
     DELETE,

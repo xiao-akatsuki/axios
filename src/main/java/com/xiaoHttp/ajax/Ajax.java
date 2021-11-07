@@ -1,10 +1,14 @@
 package com.xiaoHttp.ajax;
 
-import com.xiaoHttp.res.Res;
+
+import com.xiaoHttp.method.Method;
+import com.xiaoHttp.response.Response;
 
 public interface Ajax {
+
+    Response get() throws Exception;
     
-    default void then(Res accept){
-        System.out.println(accept);
+    default void then(Method accept) throws Exception{
+        accept.accept(get());
     }
 }

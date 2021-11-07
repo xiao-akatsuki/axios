@@ -20,7 +20,8 @@ public class AppTest {
 
     @Test
     public void test_get() throws Exception{
-        String url = "https://www.boyucode.com/competition/hero/getHero";
+        String url = "http://localhost:8080/demo/base/add";
+        // String url = "https://www.boyucode.com/competition/hero/getHero";
         // String a = HttpRequest.get(url).then();
         
         Axios.get(url).then(json ->{
