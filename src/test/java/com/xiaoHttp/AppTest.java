@@ -1,5 +1,7 @@
 package com.xiaoHttp;
 
+import com.xiaoHttp.core.http.Http;
+import com.xiaoHttp.core.requestMethod.RequestMethod;
 import com.xiaoHttp.header.Header;
 import com.xiaoHttp.request.Request;
 
@@ -9,6 +11,17 @@ import org.junit.Test;
  * Unit test for simple App.
  */
 public class AppTest {
+
+    @Test
+    public void test_other(){
+        String url = "http://localhost:8080/demo/base/select";
+        try{
+            System.out.println(Http.post(url, RequestMethod.PUT.name(), null , null));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        
+    }
 
     @Test
     public void test_get_url(){
@@ -82,5 +95,22 @@ public class AppTest {
         request.getParams().forEach((k,v)->{
             System.out.println("key : " + k + ", value : " + v);
         });        
+    }
+
+    @Test
+    public void test_enmu(){
+        RequestMethod method = RequestMethod.POST;
+        System.out.println(method.name());
+    }
+
+    @Test
+    public void test_String(){
+        String a = null;
+        a = a.replaceAll(" ", "");
+        if(a == null || a.length() == 0){
+            System.out.println(true);
+        }else {
+            System.out.println(false);
+        }
     }
 }
