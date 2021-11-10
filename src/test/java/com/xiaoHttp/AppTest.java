@@ -13,18 +13,18 @@ import org.junit.Test;
 public class AppTest {
 
     @Test
-    public void test_other(){
-        String url = "http://localhost:8080/demo/base/select";
-        try{
-            System.out.println(Http.post(url, RequestMethod.PUT.name(), null , null));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        
+    public void  test_default() throws Exception{
+        String url = "http://localhost:8080/demo/base/remove";
+        new Axios(
+                url,
+                RequestMethod.POST,
+                new Request().add("name","post Value"),
+                new Header().add("token","post Token")
+        ).then(System.out::println);
     }
 
     @Test
-    public void test_get_url(){
+    public void test_base_get(){
         String url = "http://localhost:8080/demo/base/add";
         try {
             new Axios(url);
@@ -80,37 +80,6 @@ public class AppTest {
         } catch (Exception e) {
             //TODO: handle exception
         }
-        
-        
-        
     }
 
-    @Test
-    public void test_Request(){
-        Request request = new Request()
-            .add("account","account")
-            .add("password","password")
-            .add("key", "value");
-
-        request.getParams().forEach((k,v)->{
-            System.out.println("key : " + k + ", value : " + v);
-        });        
-    }
-
-    @Test
-    public void test_enmu(){
-        RequestMethod method = RequestMethod.POST;
-        System.out.println(method.name());
-    }
-
-    @Test
-    public void test_String(){
-        String a = null;
-        a = a.replaceAll(" ", "");
-        if(a == null || a.length() == 0){
-            System.out.println(true);
-        }else {
-            System.out.println(false);
-        }
-    }
 }
