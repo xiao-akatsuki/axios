@@ -36,18 +36,19 @@ public class AppTest {
     @Test
     public void test_get(){
         String url = "http://localhost:8080/demo/base/add";
-        
+
         try{
-            Axios.get(url).then(response ->{
-                System.out.println(response.getStatus());
-                System.out.println(response.getStatusText());
-                System.out.println(response.getHeaders());
-                System.out.println(response.getData());
-            });
+            Axios.get(url)
+				.then(response ->{
+                	System.out.println(response.getStatus());
+                	System.out.println(response.getStatusText());
+                	System.out.println(response.getHeaders());
+                	System.out.println(response.getData());
+            	});
         }catch(Exception e){
             e.printStackTrace();
         }
-        
+
         System.out.println("/////////////////////////");
 
         try {
@@ -59,11 +60,11 @@ public class AppTest {
                 System.out.println(response.getStatusText());
                 System.out.println(response.getHeaders());
                 System.out.println(response.getData());
-            });    
+            });
         } catch (Exception e) {
             //TODO: handle exception
         }
-        
+
         System.out.println("/////////////////////////");
 
         try {
@@ -76,10 +77,30 @@ public class AppTest {
                 System.out.println(response.getStatusText());
                 System.out.println(response.getHeaders());
                 System.out.println(response.getData());
-            });    
+            });
         } catch (Exception e) {
             //TODO: handle exception
         }
     }
+
+    @Test
+    public void test_post(){
+    	String url = "http://localhost:8080/demo/base/remove";
+		try {
+			Axios.post(
+				url,
+				new Request().add("name","post Value"),
+				new Header().add("token","post token")
+			)
+				.then(response -> {
+					System.out.println(response.getStatus());
+					System.out.println(response.getStatusText());
+					System.out.println(response.getHeaders());
+					System.out.println(response.getData());
+				});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
