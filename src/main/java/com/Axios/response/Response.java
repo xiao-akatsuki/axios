@@ -1,4 +1,4 @@
-package com.xiaoHttp.response;
+package com.Axios.response;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class Response {
 
     private int status;
-    
+
     private Map<String,List<String>> headers;
 
     private String statusText;
@@ -35,7 +35,7 @@ public class Response {
         this.statusText = statusText;
         this.data = data;
     }
-    
+
     public void setStatus(int status){
         this.status = status;
     }

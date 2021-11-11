@@ -1,4 +1,4 @@
-package com.xiaoHttp.request;
+package com.Axios.request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,5 +75,5 @@ public class Request {
 
         return json.toString();
     }
-    
+
 }

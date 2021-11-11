@@ -1,4 +1,4 @@
-package com.xiaoHttp.header;
+package com.Axios.header;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,5 +43,5 @@ public class Header {
     public Map<String,String> getHeaders(){
         return this.headers;
     }
-    
+
 }

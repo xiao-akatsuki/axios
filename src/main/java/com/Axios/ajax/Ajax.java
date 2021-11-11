@@ -1,7 +1,7 @@
-package com.xiaoHttp.ajax;
+package com.Axios.ajax;
 
-import com.xiaoHttp.method.Method;
-import com.xiaoHttp.response.Response;
+import com.Axios.method.Method;
+import com.Axios.response.Response;
 
 /**
  * [定义接口完成基础的ajax操作](Define interfaces to complete basic Ajax operations)
@@ -24,7 +24,7 @@ public interface Ajax {
      * @return com.xiaoHttp.response.Response
      */
     Response ajax() throws Exception;
-    
+
     /**
      * [定义完成请求之后的操作](Define the action after completing the request)
      * @description zh - 定义完成请求之后的操作

@@ -4,13 +4,32 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.xiaoHttp</groupId>
-  <artifactId>xiaoHttp</artifactId>
-  <version>1.0.0</version>
+  <groupId>io.github.xiao-organization</groupId>
+  <artifactId>Axios</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+  <description>A make it easier for java to send https</description>
 
-  <name>xiaoHttp</name>
+  <scm>
+    <connection>scm:git:https://github.com/xiao-organization/Axios.git</connection>
+    <developerConnection>scm:git:https://github.com/xiao-organization/Axios.git</developerConnection>
+    <url>git:https://github.com/xiao-organization/Axios.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>XiaoXunYao</name>
+      <email>huchengyea@163.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+
+  <name>Axios</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,6 +45,106 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/java</directory>
+            <includes>
+              <include>**/*.properties</include>
+            </includes>
+          </resource>
+        </resources>
+        <plugins>
+          <!-- Source -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Javadoc -->
+          <plugin>
+		<!--引入javadoc插件 -->
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-javadoc-plugin</artifactId>
+		<version>3.0.1</version>
+		<configuration>
+			<show>package</show>
+			<!-- 禁用java 8 的DocLint新特性，以确保当javadoc有编译错误时，也能正常生成javadoc jar包-->
+			<additionalparam>-Xdoclint:none</additionalparam>
+		</configuration>
+	</plugin>
+          <!-- GPG -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--Compiler -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.0</version>
+            <configuration>
+              <source>1.8</source>
+              <target>1.8</target>
+              <fork>true</fork>
+              <verbose>true</verbose>
+              <encoding>UTF-8</encoding>
+              <showWarnings>false</showWarnings>
+            </configuration>
+          </plugin>
+          <!--Release -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5.1</version>
+          </plugin>
+		  <plugin>
+  				<groupId>org.sonatype.plugins</groupId>
+  				<artifactId>nexus-staging-maven-plugin</artifactId>
+  				<version>1.6.7</version>
+  				<extensions>true</extensions>
+  				<configuration>
+     				<serverId>ossrh</serverId>
+     				<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+     				<autoReleaseAfterClose>true</autoReleaseAfterClose>
+  				</configuration>
+		 </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
+  			<snapshotRepository>
+    			<id>ossrh</id>
+    			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+  			</snapshotRepository>
+  			<repository>
+    			<id>ossrh</id>
+    			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				<layout>default</layout>
+  			</repository>
+	  </distributionManagement>
+    </profile>
+  </profiles>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

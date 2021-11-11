@@ -1,11 +1,11 @@
-package com.xiaoHttp;
+package com.Axios;
 
-import com.xiaoHttp.ajax.Ajax;
-import com.xiaoHttp.core.http.Http;
-import com.xiaoHttp.core.requestMethod.RequestMethod;
-import com.xiaoHttp.header.Header;
-import com.xiaoHttp.request.Request;
-import com.xiaoHttp.response.Response;
+import com.Axios.ajax.Ajax;
+import com.Axios.core.http.Http;
+import com.Axios.core.requestMethod.RequestMethod;
+import com.Axios.header.Header;
+import com.Axios.request.Request;
+import com.Axios.response.Response;
 
 /**
  * [发送具体请求](Send specific request)

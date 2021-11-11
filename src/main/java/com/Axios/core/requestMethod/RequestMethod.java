@@ -1,4 +1,4 @@
-package com.xiaoHttp.core.requestMethod;
+package com.Axios.core.requestMethod;
 
 /**
  * [定义一个请求方法的枚举](Defines an enumeration of request methods)
@@ -17,5 +17,5 @@ public enum RequestMethod {
     POST,
     PUT,
     PATCH
-    
+
 }

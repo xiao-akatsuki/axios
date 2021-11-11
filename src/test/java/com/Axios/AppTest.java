@@ -1,9 +1,8 @@
-package com.xiaoHttp;
+package com.Axios;
 
-import com.xiaoHttp.core.http.Http;
-import com.xiaoHttp.core.requestMethod.RequestMethod;
-import com.xiaoHttp.header.Header;
-import com.xiaoHttp.request.Request;
+import com.Axios.core.requestMethod.RequestMethod;
+import com.Axios.header.Header;
+import com.Axios.request.Request;
 
 import org.junit.Test;
 
