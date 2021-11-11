@@ -40,15 +40,15 @@ public class Http {
         }else{
             obj = new URL(url);
         }
-        
+
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        
+
         //需要输出
-        con.setDoOutput(true);  
-        //需要输入 
-        con.setDoInput(true);   
+        con.setDoOutput(true);
+        //需要输入
+        con.setDoInput(true);
         //不允许缓存
-        con.setUseCaches(false);  
+        con.setUseCaches(false);
 
         //设置请求类型
         if(method == null){
@@ -63,7 +63,7 @@ public class Http {
                 con.setRequestMethod(method);
             }
         }
-        
+
         if(headers != null){
             headers.getHeaders().forEach((key,value)->{
                 //添加请求头
@@ -71,7 +71,7 @@ public class Http {
             });
         }
 
-        BufferedReader in = 
+        BufferedReader in =
             new BufferedReader(new InputStreamReader(con.getInputStream()));
 
         String inputLine;
@@ -81,11 +81,11 @@ public class Http {
             response.append(inputLine);
         }
         in.close();
-        
+
         return new Response(
-            con.getResponseCode(), 
-            con.getHeaderFields(), 
-            con.getResponseMessage(), 
+            con.getResponseCode(),
+            con.getHeaderFields(),
+            con.getResponseMessage(),
             response.toString()
         );
     }
@@ -131,9 +131,11 @@ public class Http {
         con.connect();
 
         // 得到请求的输出流对象
-        OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream(),"UTF-8");
-        writer.write(body.toBody());
-        writer.flush();
+		if (body != null) {
+			OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream(), "UTF-8");
+			writer.write(body.toBody());
+			writer.flush();
+		}
 
         // 获取服务端响应，通过输入流来读取URL的响应
         InputStream is = con.getInputStream();
