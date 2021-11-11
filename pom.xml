@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.xiao-organization</groupId>
-  <artifactId>Axios</artifactId>
+  <artifactId>axios</artifactId>
   <version>0.0.1</version>
   <packaging>jar</packaging>
   <description>A make it easier for java to send https</description>
@@ -15,6 +15,13 @@
     <developerConnection>scm:git:https://github.com/xiao-organization/Axios.git</developerConnection>
     <url>git:https://github.com/xiao-organization/Axios.git</url>
   </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
   <developers>
     <developer>
@@ -27,7 +34,7 @@
     </developer>
   </developers>
 
-  <name>Axios</name>
+  <name>axios</name>
   <!-- FIXME change it to the project's website -->
   <url>https://www.example.com</url>
 
