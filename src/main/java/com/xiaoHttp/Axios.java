@@ -7,18 +7,38 @@ import com.xiaoHttp.header.Header;
 import com.xiaoHttp.request.Request;
 import com.xiaoHttp.response.Response;
 
+/**
+ * [发送具体请求](Send specific request)
+ * @description zh - 发送具体请求
+ * @description en - Send specific request
+ * @version V1.0
+ * @author XiaoXunYao
+ * @since 2021-11-11 18:49:03
+ */
 public class Axios implements Ajax {
 
+    /** url */
     private String url;
 
+    /** method */
     private String method;
 
+    /** params */
     private Request params;
 
+    /** headers */
     private Header headers;
 
     public Axios(){  }
 
+    /**
+     * [只是单纯发送一个get请求](Just send a get request)
+     * @description zh - 只是单纯发送一个get请求
+     * @description en - Just send a get request
+     * @version V1.0
+     * @author XiaoXunYao
+     * @since 2021-11-11 18:50:04
+     */
     public Axios(String url) throws Exception{
         this.url = url;
         ajax();
