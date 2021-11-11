@@ -38,7 +38,7 @@ implementation 'io.github.xiao-organization:axios:0.0.1'
 ```
 
 Standalone jar
-If you do not use any dependency management tool, you can find the latest standalone jar [here](https://github.com/xiao-organization/Axios/releases/latest).
+If you do not use any dependency management tool, you can find the latest standalone jar [here](https://github.com/xiao-organization/axios/releases/latest).
 
 ## Minimum Required JDK
 
@@ -50,4 +50,4 @@ Other JRE implementations may work as well, but haven't been tested.
 
 ## License
 
-Everything found in this repo is licensed under an [Apache-2.0 License](https://github.com/xiao-organization/Axios/blob/master/LICENSE). See the `LICENSE` file for specifics.
+Everything found in this repo is licensed under an [Apache-2.0 License](https://github.com/xiao-organization/axios/blob/master/LICENSE). See the `LICENSE` file for specifics.
