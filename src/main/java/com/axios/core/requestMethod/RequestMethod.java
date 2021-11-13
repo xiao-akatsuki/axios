@@ -1,4 +1,4 @@
-package com.Axios.core.requestMethod;
+package com.axios.core.requestMethod;
 
 /**
  * [定义一个请求方法的枚举](Defines an enumeration of request methods)

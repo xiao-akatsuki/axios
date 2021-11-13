@@ -1,6 +1,6 @@
-package com.Axios.method;
+package com.axios.method;
 
-import com.Axios.response.Response;
+import com.axios.response.Response;
 
 /**
  * [定义请求结束之后的操作](Define the action after the request ends)

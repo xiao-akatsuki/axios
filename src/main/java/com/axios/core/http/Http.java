@@ -1,12 +1,12 @@
-package com.Axios.core.http;
+package com.axios.core.http;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.Axios.header.Header;
-import com.Axios.request.Request;
-import com.Axios.response.Response;
+import com.axios.header.Header;
+import com.axios.request.Request;
+import com.axios.response.Response;
 
 /**
  * [发送请求的方式](How to send the request)

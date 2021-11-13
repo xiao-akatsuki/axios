@@ -1,4 +1,4 @@
-package com.Axios.header;
+package com.axios.header;
 
 import java.util.HashMap;
 import java.util.Map;

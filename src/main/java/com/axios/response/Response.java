@@ -1,4 +1,4 @@
-package com.Axios.response;
+package com.axios.response;
 
 import java.util.List;
 import java.util.Map;

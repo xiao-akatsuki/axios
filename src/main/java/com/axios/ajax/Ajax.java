@@ -1,7 +1,7 @@
-package com.Axios.ajax;
+package com.axios.ajax;
 
-import com.Axios.method.Method;
-import com.Axios.response.Response;
+import com.axios.method.Method;
+import com.axios.response.Response;
 
 /**
  * [定义接口完成基础的ajax操作](Define interfaces to complete basic Ajax operations)

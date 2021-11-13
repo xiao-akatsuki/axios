@@ -1,4 +1,4 @@
-package com.Axios;
+package com.axios;
 
 import com.axios.core.requestMethod.RequestMethod;
 import com.axios.header.Header;
@@ -6,10 +6,8 @@ import com.axios.request.Request;
 
 import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest {
+
+public class AxiosTest {
 
     @Test
     public void  test_default() throws Exception{
@@ -101,5 +99,6 @@ public class AppTest {
 			e.printStackTrace();
 		}
 	}
+
 
 }
