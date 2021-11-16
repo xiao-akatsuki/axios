@@ -109,6 +109,75 @@ public class UrlTool {
 		return (str == null) ? "" : str.toString();
 	}
 
+	/**
+	 * [检查对象是否为null](Check whether the object is null)
+	 * @description zh - 检查对象是否为null
+	 * @description en - Check whether the object is null
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:49:42
+	 * @param obj 检查的对象
+	 * @return boolean
+	 */
+	public static boolean isNull(Object obj) {
+		return null == obj || obj.equals(null);
+	}
 
+	/**
+	 * [如果给定对象为 null 返回默认值](Returns the default value if the given object is null)
+	 * @description zh - 如果给定对象为 null 返回默认值
+	 * @description en - Returns the default value if the given object is null
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:50:20
+	 * @param object 检查的对象
+	 * @param defaultValue 默认值
+	 * @return T
+	 */
+	public static <T> T defaultIfNull(final T object, final T defaultValue) {
+		return isNull(object) ? defaultValue : object;
+	}
+
+	/**
+	 * [比较两个字符串](Compare two strings)
+	 * @description zh - 比较两个字符串
+	 * @description en - Compare two strings
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:55:03
+	 * @param str1 字符串1
+	 * @param str2 字符串2
+	 * @return boolean
+	 */
+	public static boolean equalsIgnoreCase(CharSequence str1, CharSequence str2) {
+		return equals(str1, str2, true);
+	}
+
+	/**
+	 * [比较两个字符串是否相等。](Compares whether two strings are equal.)
+	 * @description zh - 比较两个字符串是否相等。
+	 * @description en - Compares whether two strings are equal.
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:55:51
+	 * @param str1 字符串1
+	 * @param str2 字符串2
+	 * @param ignoreCase 是否忽略大小写
+	 * @return boolean
+	 */
+	public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
+		if (null == str1) {
+			return str2 == null;
+		}
+		if (null == str2) {
+			return false;
+		}
+
+		if (ignoreCase) {
+			return str1.toString().equalsIgnoreCase(str2.toString());
+		} else {
+			return str1.toString().contentEquals(str2);
+		}
+	}
 
 }
