@@ -7,6 +7,7 @@ import javax.net.ssl.SSLSocketFactory;
 import com.axios.core.requestMethod.RequestMethod;
 import com.axios.core.urlTool.UrlTool;
 import com.axios.exception.ConnException;
+import com.axios.header.RequestHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -215,6 +216,109 @@ public class Connection {
 		return conn;
 	}
 
+	/** header ------------------- 请求头 */
 
+	/**
+	 * [设置请求头](Set request header)
+	 * @description zh - 设置请求头
+	 * @description en - Set request header
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:26:15
+	 * @param header 请求头
+	 * @param value 请求内容
+	 * @param isOverride 是否覆盖旧值
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection header(String header, String value, boolean isOverride) {
+		if (null != this.conn) {
+			if (isOverride) {
+				this.conn.setRequestProperty(header, value);
+			} else {
+				this.conn.addRequestProperty(header, value);
+			}
+		}
+		return this;
+	}
 
+	/**
+	 * [设置请求头](Set request header)
+	 * @description zh - 设置请求头
+	 * @description en - Set request header
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:30:59
+	 * @param header 请求头
+	 * @param value 请求内容
+	 * @param isOverride 是否覆盖旧值
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection header(RequestHeader header, String value, boolean isOverride) {
+		return header(header.toString(), value, isOverride);
+	}
+
+	/**
+	 * [设置请求头](Set request header)
+	 * @description zh - 设置请求头
+	 * @description en - Set request header
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:33:36
+	 * @param header 请求头
+	 * @param isOverride 是否覆盖旧值
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection header(Map<String, List<String>> headerMap, boolean isOverride) {
+		if (UrlTool.isNotEmpty(headerMap)) {
+			String name;
+			for (Entry<String, List<String>> entry : headerMap.entrySet()) {
+				name = entry.getKey();
+				for (String value : entry.getValue()) {
+					this.header(name, UrlTool.nullToEmpty(value), isOverride);
+				}
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * [获取请求头](Get request header)
+	 * @description zh - 获取请求头
+	 * @description en - Get request header
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:39:24
+	 * @param name 请求头的名字
+	 * @return java.lang.String
+	 */
+	public String header(String name) {
+		return this.conn.getHeaderField(name);
+	}
+
+	/**
+	 * [获取请求头](Get request header)
+	 * @description zh - 获取请求头
+	 * @description en - Get request header
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:40:05
+	 * @param name 请求头
+	 * @return java.lang.String
+	 */
+	public String header(RequestHeader name) {
+		return header(name.toString());
+	}
+
+	/**
+	 * [获取所有Http请求头](Get all HTTP request headers)
+	 * @description zh - 获取所有Http请求头
+	 * @description en - Get all HTTP request headers
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:40:33
+	 * @return java.util.Map<java.lang.String, java.util.List<java.lang.String>>
+	 */
+	public Map<String, List<String>> headers() {
+		return this.conn.getHeaderFields();
+	}
 }
