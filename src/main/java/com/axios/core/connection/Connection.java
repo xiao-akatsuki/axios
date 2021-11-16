@@ -4,6 +4,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.axios.core.config.ssl.DefaultSSLInfo;
 import com.axios.core.requestMethod.RequestMethod;
 import com.axios.core.urlTool.UrlTool;
 import com.axios.exception.ConnException;
