@@ -3,10 +3,19 @@ package com.axios.core.urlTool;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLStreamHandler;
+import java.util.Map;
 
 import com.axios.core.assertion.Assert;
 import com.axios.exception.ConnException;
 
+/**
+ * [整合的工具类](Integrated tools)
+ * @description zh - 整合的工具类
+ * @description en - Integrated tools
+ * @version V1.0
+ * @author XiaoXunYao
+ * @since 2021-11-16 18:35:23
+ */
 public class UrlTool {
 
 	/**
@@ -73,5 +82,33 @@ public class UrlTool {
 		}
 		return sb.toString();
 	}
+
+	/**
+	 * [判断该集合是否为空](Judge whether the collection is empty)
+	 * @description zh - 判断该集合是否为空
+	 * @description en - Judge whether the collection is empty
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:34:34
+	 * @param map 集合
+	 * @return boolean
+	 */
+	public static boolean isNotEmpty(Map<?, ?> map) {
+		return null != map && false == map.isEmpty();
+	}
+
+	/**
+	 * [当给定字符串为null时，转换为“”](Converts to '' when the given string is null)
+	 * @description zh - 当给定字符串为null时，转换为“”
+	 * @description en - Converts to '' when the given string is null
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:36:26
+	 */
+	public static String nullToEmpty(CharSequence str) {
+		return (str == null) ? "" : str.toString();
+	}
+
+
 
 }
