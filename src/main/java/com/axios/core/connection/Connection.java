@@ -321,4 +321,30 @@ public class Connection {
 	public Map<String, List<String>> headers() {
 		return this.conn.getHeaderFields();
 	}
+
+	/**
+	 * [设置https请求参数](Set HTTPS request parameters)
+	 * @description zh - 设置https请求参数
+	 * @description en - Set HTTPS request parameters
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-16 18:46:49
+	 * @param hostnameVerifier 域名验证器
+	 * @param ssf  SSLSocketFactory
+	 * @throws com.axios.exception.ConnException
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setHttpsInfo(HostnameVerifier hostnameVerifier, SSLSocketFactory ssf) throws ConnException {
+		final HttpURLConnection conn = this.conn;
+
+		if (conn instanceof HttpsURLConnection) {
+			// HTTPS request
+			final HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
+			// Authentication domain
+			httpsConn.setHostnameVerifier(UrlTool.defaultIfNull(hostnameVerifier, DefaultSSLInfo.TRUST_ANY_HOSTNAME_VERIFIER));
+			httpsConn.setSSLSocketFactory(UrlTool.defaultIfNull(ssf, DefaultSSLInfo.DEFAULT_SSF));
+		}
+		return this;
+	}
+
 }
