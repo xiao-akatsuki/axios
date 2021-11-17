@@ -2,7 +2,7 @@ package com.axios.core.config.ssl;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import com.axios.core.urlTool.UrlTool;
+import com.axios.core.tool.UrlTool;
 
 /**
  * [默认的全局SSL配置](Default global SSL configuration)
