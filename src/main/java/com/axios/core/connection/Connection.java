@@ -6,7 +6,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import com.axios.core.config.ssl.DefaultSSLInfo;
 import com.axios.core.requestMethod.RequestMethod;
-import com.axios.core.urlTool.UrlTool;
+import com.axios.core.tool.UrlTool;
 import com.axios.exception.ConnException;
 import com.axios.header.RequestHeader;
 
@@ -164,10 +164,6 @@ public class Connection {
 				|| RequestMethod.PATCH.equals(method)
 				|| RequestMethod.DELETE.equals(method)) {
 			this.conn.setUseCaches(false);
-			// add patch method support
-			if (RequestMethod.PATCH.equals(method)) {
-				HttpGlobalConfig.allowPatch();
-			}
 		}
 		// method
 		try {
@@ -348,4 +344,308 @@ public class Connection {
 		return this;
 	}
 
+	/**
+	 * [关闭缓存](Close cache)
+	 * @description zh - 关闭缓存
+	 * @description en - Close cache
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 13:55:53
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection disableCache() {
+		this.conn.setUseCaches(false);
+		return this;
+	}
+
+	/**
+	 * [设置连接超时](Set connection timeout)
+	 * @description zh - 设置连接超时
+	 * @description en - Set connection timeout
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 13:56:30
+	 * @param timeout 超时时间
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setConnectTimeout(int timeout) {
+		if (timeout > 0 && null != this.conn) {
+			this.conn.setConnectTimeout(timeout);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置读取超时](Set read timeout)
+	 * @description zh - 设置读取超时
+	 * @description en - Set read timeout
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 13:57:25
+	 * @param timeout 超时时间
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setReadTimeout(int timeout) {
+		if (timeout > 0 && null != this.conn) {
+			this.conn.setReadTimeout(timeout);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置连接和读取的超时时间](Set connection and read timeout)
+	 * @description zh - 设置连接和读取的超时时间
+	 * @description en - Set connection and read timeout
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 13:58:02
+	 * @param timeout 超时时间
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setConnectionAndReadTimeout(int timeout) {
+		setConnectTimeout(timeout);
+		setReadTimeout(timeout);
+		return this;
+	}
+
+	/**
+	 * [设置Cookie](Set cookies)
+	 * @description zh - 设置Cookie
+	 * @description en - Set cookies
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 13:59:41
+	 * @param cookie Cookie
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setCookie(String cookie) {
+		if (cookie != null) {
+			header(RequestHeader.COOKIE, cookie, true);
+		}
+		return this;
+	}
+
+	/**
+	 * [采用流方式上传数据，无需本地缓存数据。](Upload data in streaming mode without local cache data.)
+	 * @description zh - 采用流方式上传数据，无需本地缓存数据。
+	 * @description en - Upload data in streaming mode without local cache data.
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:07:01
+	 * @param blockSize 块大小（bytes数）
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setChunkedStreamingMode(int blockSize) {
+		if (blockSize > 0) {
+			conn.setChunkedStreamingMode(blockSize);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置自动HTTP 30X跳转](Set automatic HTTP 30x jump)
+	 * @description zh - 设置自动HTTP 30X跳转
+	 * @description en - Set automatic HTTP 30x jump
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:08:13
+	 * @param isInstanceFollowRedirects 是否自定跳转
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection setInstanceFollowRedirects(boolean isInstanceFollowRedirects) {
+		conn.setInstanceFollowRedirects(isInstanceFollowRedirects);
+		return this;
+	}
+
+	/**
+	 * [连接](connect)
+	 * @description zh - 连接
+	 * @description en - connect
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:09:08
+	 * @throws java.io.IOException
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection connect() throws IOException {
+		if (null != this.conn) {
+			this.conn.connect();
+		}
+		return this;
+	}
+
+	/**
+	 * [静默断开连接。不抛出异常](Silently disconnect. Do not throw exceptions)
+	 * @description zh - 静默断开连接。不抛出异常
+	 * @description en - Silently disconnect. Do not throw exceptions
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:09:55
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection disconnectQuietly() {
+		try {
+			disconnect();
+		} catch (Throwable e) {
+			// ignore
+		}
+
+		return this;
+	}
+
+	/**
+	 * [断开连接](Disconnect)
+	 * @description zh - 断开连接
+	 * @description en - Disconnect
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:10:37
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection disconnect() {
+		if (null != this.conn) {
+			this.conn.disconnect();
+		}
+		return this;
+	}
+
+	/**
+	 * [获得输入流对象](Get input stream object)
+	 * @description zh - 获得输入流对象
+	 * @description en - Get input stream object
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:11:21
+	 * @throws java.io.IOException
+	 * @return java.io.InputStream
+	 */
+	public InputStream getInputStream() throws IOException {
+		if (null != this.conn) {
+			return this.conn.getInputStream();
+		}
+		return null;
+	}
+
+	/**
+	 * [当返回错误代码时，获得错误内容流](When the error code is returned, the error content stream is obtained)
+	 * @description zh - 当返回错误代码时，获得错误内容流
+	 * @description en - When the error code is returned, the error content stream is obtained
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:12:09
+	 */
+	public InputStream getErrorStream() {
+		if (null != this.conn) {
+			return this.conn.getErrorStream();
+		}
+		return null;
+	}
+
+	/**
+	 * [获取输出流对象 输出流对象用于发送数据](Gets the output stream object used to send data)
+	 * @description zh - 获取输出流对象 输出流对象用于发送数据
+	 * @description en - Gets the output stream object used to send data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:13:36
+	 * @throws java.io.IOException
+	 * @return java.io.OutputStream
+	 */
+	public OutputStream getOutputStream() throws IOException {
+		if (null == this.conn) {
+			throw new IOException("HttpURLConnection has not been initialized.");
+		}
+		final RequestMethod method = getMethod();
+		this.conn.setDoOutput(true);
+		final OutputStream out = this.conn.getOutputStream();
+		if(method == RequestMethod.GET && method != getMethod()){
+			this.conn.setRequestMethod(RequestMethod.GET.name());
+		}
+		return out;
+	}
+
+	/**
+	 * [获取响应码](Get response code)
+	 * @description zh - 获取响应码
+	 * @description en - Get response code
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:14:44
+	 * @throws java.io.IOException
+	 * @return int
+	 */
+	public int responseCode() throws IOException {
+		if (null != this.conn) {
+			return this.conn.getResponseCode();
+		}
+		return 0;
+	}
+
+	/**
+	 * [获得字符集编码](Get character set encoding)
+	 * @description zh - 获得字符集编码
+	 * @description en - Get character set encoding
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:16:43
+	 * @return java.lang.String
+	 */
+	public String getCharsetName() {
+		return UrlTool.getCharset(conn);
+	}
+
+	/**
+	 * [获取字符集编码](Get character set encoding)
+	 * @description zh - 获取字符集编码
+	 * @description en - Get character set encoding
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:17:24
+	 * @return java.nio.charset.Charset
+	 */
+	public Charset getCharset() {
+		Charset charset = null;
+		final String charsetName = getCharsetName();
+		if (UrlTool.isNotBlank(charsetName)) {
+			try {
+				charset = Charset.forName(charsetName);
+			} catch (UnsupportedCharsetException e) {
+				// ignore
+			}
+		}
+		return charset;
+	}
+
+	/**
+	 * [初始化http或https请求参数](Initialize HTTP or HTTPS request parameters)
+	 * @description zh - 初始化http或https请求参数
+	 * @description en - Initialize HTTP or HTTPS request parameters
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:19:47
+	 * @throws java.io.IOException
+	 * @return java.net.HttpURLConnection
+	 */
+	private HttpURLConnection openHttp() throws IOException {
+		final URLConnection conn = openConnection();
+		if (false == conn instanceof HttpURLConnection) {
+			// prevent conversion exceptions caused by other protocols
+			throw new ConnException("'"+ conn.getClass().getName() +"' of URL [" +  this.url + "] is not a http connection, make sure URL is format for http.");
+		}
+		return (HttpURLConnection) conn;
+	}
+
+	/**
+	 * [建立连接](Establish connection)
+	 * @description zh - 建立连接
+	 * @description en - Establish connection
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-17 14:20:37
+	 * @throws java.io.IOException
+	 * @return java.net.URLConnection
+	 */
+	private URLConnection openConnection() throws IOException {
+		return (null == this.proxy) ? url.openConnection() : url.openConnection(this.proxy);
+	}
 }
