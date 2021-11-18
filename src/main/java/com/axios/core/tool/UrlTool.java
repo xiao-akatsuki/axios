@@ -1,12 +1,14 @@
 package com.axios.core.tool;
 
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -307,6 +309,109 @@ public class UrlTool {
 		if (m.find()) {
 			consumer.accept(m);
 		}
+	}
+
+	/**
+	 * [转URL为URI](Convert URL to URI)
+	 * @description zh - 转URL为URI
+	 * @description en - Convert URL to URI
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-18 14:18:56
+	 * @param url URL
+	 * @throws com.axios.exception.ConnException
+	 * @return java.net.URI
+	 */
+	public static URI toURI(URL url) throws ConnException {
+		return toURI(url);
+	}
+
+	/**
+	 * [转URL为URI](Convert URL to URI)
+	 * @description zh - 转URL为URI
+	 * @description en - Convert URL to URI
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-18 14:19:36
+	 * @param location URL
+	 * @throws com.axios.exception.ConnException
+	 * @return java.net.URI
+	 */
+	public static URI toURI(String location) throws ConnException {
+		try {
+			return new URI(trim(location));
+		} catch (URISyntaxException e) {
+			throw new ConnException(e);
+		}
+	}
+
+	/**
+	 * [除去字符串头尾部的断言为真的字符](Remove the character whose assertion is true at the beginning and end of the string)
+	 * @description zh - 除去字符串头尾部的断言为真的字符
+	 * @description en - Remove the character whose assertion is true at the beginning and end of the string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-18 14:15:30
+	 * @param str 要处理的字符串
+	 * @return java.lang.String
+	 */
+	public static String trim(CharSequence str) {
+		return (null == str) ? null : trim(str, 0);
+	}
+
+	/**
+	 * [除去字符串头尾部的断言为真的字符](Remove the character whose assertion is true at the beginning and end of the string)
+	 * @description zh - 除去字符串头尾部的断言为真的字符
+	 * @description en - Remove the character whose assertion is true at the beginning and end of the string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-18 14:14:30
+	 * @param str 要处理的字符串
+	 * @param mode trimStart
+	 * @return java.lang.String
+	 */
+	public static String trim(CharSequence str, int mode) {
+		return trim(str, mode, Assert::isBlankChar);
+	}
+
+	/**
+	 * [除去字符串头尾部的断言为真的字符](Remove the character whose assertion is true at the beginning and end of the string)
+	 * @description zh - 除去字符串头尾部的断言为真的字符
+	 * @description en - Remove the character whose assertion is true at the beginning and end of the string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-18 14:13:31
+	 * @param str 要处理的字符串
+	 * @param mode trimStart
+	 * @param predicate 是否过掉字符
+	 * @return java.lang.String
+	 */
+	public static String trim(CharSequence str, int mode, Predicate<Character> predicate) {
+		String result;
+		if (str == null) {
+			result = null;
+		} else {
+			int length = str.length();
+			int start = 0;
+			int end = length;
+			if (mode <= 0) {
+				while ((start < end) && (predicate.test(str.charAt(start)))) {
+					start++;
+				}
+			}
+			if (mode >= 0) {
+				while ((start < end) && (predicate.test(str.charAt(end - 1)))) {
+					end--;
+				}
+			}
+			if ((start > 0) || (end < length)) {
+				result = str.toString().substring(start, end);
+			} else {
+				result = str.toString();
+			}
+		}
+
+		return result;
 	}
 
 }
