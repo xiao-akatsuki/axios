@@ -42,7 +42,7 @@ If you do not use any dependency management tool, you can find the latest standa
 
 ## Minimum Required JDK
 
-Axios is known to work with:
+axios is known to work with:
 
 Java 1.8 and higher
 
