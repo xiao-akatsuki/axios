@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import com.axios.core.assertion.Assert;
 import com.axios.core.tool.mutable.MutableObj;
+import com.axios.core.tool.ssl.SSLTool;
 import com.axios.exception.ConnException;
 
 /**
@@ -412,6 +413,91 @@ public class UrlTool {
 		}
 
 		return result;
+	}
+
+	/**
+	 * [字符串是否为空](Is the string empty)
+	 * @description zh - 字符串是否为空
+	 * @description en - Is the string empty
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-19 21:06:22
+	 * @param str 字符串
+	 * @return boolean
+	 */
+	public static boolean isEmpty(CharSequence str) {
+		return str == null || str.length() == 0;
+	}
+
+	/**
+	 * [字符串是否为非空白](Is the string non blank)
+	 * @description zh - 字符串是否为非空白
+	 * @description en - Is the string non blank
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-19 21:06:57
+	 * @param str 字符串
+	 * @return boolean
+	 */
+	public static boolean isNotEmpty(CharSequence str) {
+		return false == isEmpty(str);
+	}
+
+	/**
+	 * [字符串是否以给定字符结尾](Whether the string ends with the given character)
+	 * @description zh - 字符串是否以给定字符结尾
+	 * @description en - Whether the string ends with the given character
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-19 21:07:59
+	 * @param str 字符串
+	 * @param c 字符
+	 * @return boolean
+	 */
+	public static boolean endWith(CharSequence str, char c) {
+		if (isEmpty(str)) {
+			return false;
+		}
+		return c == str.charAt(str.length() - 1);
+	}
+
+	/**
+	 * [字符串是否以给定字符结尾](Whether the string ends with the given character)
+	 * @description zh - 字符串是否以给定字符结尾
+	 * @description en - Whether the string ends with the given character
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-19 21:09:23
+	 * @param str 字符串
+	 * @param suffix 前缀
+	 * @return boolean
+	 */
+	public static boolean endWith(CharSequence str, CharSequence suffix) {
+		return endWith(str, suffix, false);
+	}
+
+	/**
+	 * [字符串是否以给定字符结尾](Whether the string ends with the given character)
+	 * @description zh - 字符串是否以给定字符结尾
+	 * @description en - Whether the string ends with the given character
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-19 21:09:58
+	 * @param str 字符串
+	 * @param suffix 前缀
+	 * @param isIgnoreCase 是否忽略大小写
+	 * @return boolean
+	 */
+	public static boolean endWith(CharSequence str, CharSequence suffix, boolean isIgnoreCase) {
+		if (null == str || null == suffix) {
+			return null == str && null == suffix;
+		}
+
+		if (isIgnoreCase) {
+			return str.toString().toLowerCase().endsWith(suffix.toString().toLowerCase());
+		} else {
+			return str.toString().endsWith(suffix.toString());
+		}
 	}
 
 }
