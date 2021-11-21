@@ -5,6 +5,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.config.global.HttpGlobalConfig;
+import com.axios.core.http.url.UrlBuilder;
 import com.axios.core.requestMethod.RequestMethod;
 
 import java.io.File;
