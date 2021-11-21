@@ -172,7 +172,7 @@ public final class UrlBuilder implements Serializable {
 	 */
 	public static UrlBuilder of(String url, Charset charset) {
 		Assert.notBlank(url, "Url must be not blank!");
-		return of(HttpTool.u\rl(UrlTool.trim(url)), charset);
+		return of(HttpTool.url(UrlTool.trim(url)), charset);
 	}
 
 	/**
