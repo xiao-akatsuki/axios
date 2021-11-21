@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLStreamHandler;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
 
 import com.axios.core.assertion.Assert;
 import com.axios.core.tool.mutable.MutableObj;
-import com.axios.core.tool.ssl.SSLTool;
 import com.axios.exception.ConnException;
 
 /**
@@ -498,6 +498,98 @@ public class UrlTool {
 		} else {
 			return str.toString().endsWith(suffix.toString());
 		}
+	}
+
+	/**
+	 * [如果字符串是 null 或者&quot;&quot;，则返回指定默认字符串，否则返回字符串本身。](If the string is null or & quote& quot;， Returns the specified default string, otherwise returns the string itself.)
+	 * @description zh - 如果字符串是 null 或者&quot;&quot;，则返回指定默认字符串，否则返回字符串本身。
+	 * @description en - If the string is null or & quote& quot;， Returns the specified default string, otherwise returns the string itself.
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-21 19:31:45
+	 * @param str 判断的文本
+	 * @param defaultStr 默认的文本
+	 * @return java.lang.String
+	 */
+	public static String emptyToDefault(CharSequence str, String defaultStr) {
+		return isEmpty(str) ? defaultStr : str.toString();
+	}
+
+	/**
+	 * [如果字符串是 null 或者&quot;&quot;，则返回指定默认字符串，否则返回字符串本身。](If the string is null or & quote& quot;， Returns the specified default string, otherwise returns the string itself.)
+	 * @description zh - 如果字符串是 null 或者&quot;&quot;，则返回指定默认字符串，否则返回字符串本身。
+	 * @description en - If the string is null or & quote& quot;， Returns the specified default string, otherwise returns the string itself.
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-21 19:55:26
+	 * @param str 判断的文本
+	 * @param defaultStr 默认的文本
+	 * @return java.lang.String
+	 */
+	public static String blankToDefault(CharSequence str, String defaultStr) {
+		return isBlank(str) ? defaultStr : str.toString();
+	}
+
+	public static String toString(CharSequence cs) {
+		return null == cs ? null : cs.toString();
+	}
+
+	/**
+	 * [去掉指定前缀](Remove the specified prefix)
+	 * @description zh - 去掉指定前缀
+	 * @description en - Remove the specified prefix
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-21 20:21:35
+	 * @param str 字符串
+	 * @param prefix 前缀
+	 * @return java.lang.String
+	 */
+	public static String removePrefix(CharSequence str, CharSequence prefix) {
+		if (isEmpty(str) || isEmpty(prefix)) {
+			return str.toString();
+		}
+		final String str2 = str.toString();
+		if (str2.startsWith(prefix.toString())) {
+			return str2.substring(prefix.length(), str2.length());
+		}
+		return str2;
+	}
+
+	/**
+	 * [去掉指定后缀](Remove the specified suffix)
+	 * @description zh - 去掉指定后缀
+	 * @description en - Remove the specified suffix
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-21 20:24:54
+	 * @param str 字符串
+	 * @param suffix 后缀
+	 * @return java.lang.String
+	 */
+	public static String removeSuffix(CharSequence str, CharSequence suffix) {
+		if (isEmpty(str) || isEmpty(suffix)) {
+			return str.toString();
+		}
+		final String str2 = str.toString();
+		if (str2.endsWith(suffix.toString())) {
+			return str2.substring(0,str2.length() - suffix.length());
+		}
+		return str2;
+	}
+
+	/**
+	 * [数组是否为空](Is the array empty)
+	 * @description zh - 数组是否为空
+	 * @description en - Is the array empty
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-21 20:26:18
+	 * @param collection 集合
+	 * @return boolean
+	 */
+	public static boolean isEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
 	}
 
 }
