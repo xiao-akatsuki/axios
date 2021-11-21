@@ -1,5 +1,8 @@
 package com.axios.core.tool.http;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
@@ -112,5 +115,14 @@ public class HttpTool {
 	public static boolean isArray(Object obj) {
 		return null != obj && obj.getClass().isArray();
 	}
+
+    public static URL url(String url) {
+        try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
 
 }
