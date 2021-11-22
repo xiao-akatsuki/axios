@@ -13,7 +13,6 @@ import com.axios.core.assertion.Assert;
 import com.axios.core.rfc.RFC3986;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.http.HttpTool;
-import com.axios.core.tool.ssl.SSLTool;
 
 /**
  * [URL 生成器](URL generator)
