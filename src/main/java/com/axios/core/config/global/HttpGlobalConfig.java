@@ -14,7 +14,7 @@ import java.net.CookieManager;
 public class HttpGlobalConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	protected static int timeout = -1;
+	public static int timeout = -1;
 
 	/**
 	 * [获取全局默认的超时时长](Gets the global default timeout length)
