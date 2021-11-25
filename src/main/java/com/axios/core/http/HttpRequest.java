@@ -4,6 +4,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.axios.core.config.global.GlobalCookieManager;
+import com.axios.core.config.global.GlobalHeaders;
 import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.url.UrlBuilder;
@@ -170,6 +171,32 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		GlobalCookieManager.setCookieManager(null);
 	}
 
+	/**
+	 * [POST请求](Post request)
+	 * @description zh - POST请求
+	 * @description en - Post request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-25 19:33:04
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest post(String url) {
+		return new HttpRequest(url).method(RequestMethod.POST);
+	}
 
+	/**
+	 * [GET请求](GET request)
+	 * @description zh - GET请求
+	 * @description en - GET request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-25 19:33:51
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest get(String url) {
+		return new HttpRequest(url).method(RequestMethod.GET);
+	}
 
 }
