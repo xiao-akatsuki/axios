@@ -1,7 +1,6 @@
 package com.axios.core.tool.http;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -19,6 +18,20 @@ import com.axios.core.tool.text.StrJoiner;
  * @since 2021-11-19 16:49:54
  */
 public class HttpTool {
+
+	/**
+	 * [数组是否为空](is the array empty)
+	 * @description zh - 数组是否为空
+	 * @description en - is the array empty
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:16:39
+	 * @param array 数组
+	 * @return boolean
+	 */
+	public static <T> boolean isEmpty(T[] array) {
+		return array == null || array.length == 0;
+	}
 
 	/**
 	 * [集合是否为空](Is the collection empty)
@@ -68,6 +81,29 @@ public class HttpTool {
 			return new String(data);
 		}
 		return new String(data, charset);
+	}
+
+	/**
+	 * [分隔符将数组转换为字符串](The delimiter converts the array to a string)
+	 * @description zh - 分隔符将数组转换为字符串
+	 * @description en - The delimiter converts the array to a string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:20:09
+	 * @param array 数组
+	 * @param delimiter 分隔符
+	 * @param prefix 前缀
+	 * @param suffix 后缀
+	 * @return java.lang.String
+	 */
+	public static <T> String join(T[] array, CharSequence delimiter, String prefix, String suffix) {
+		if (null == array) {
+			return null;
+		}
+		return StrJoiner.of(delimiter, prefix, suffix)
+				.setWrapElement(true)
+				.append(array)
+				.toString();
 	}
 
 	/**
