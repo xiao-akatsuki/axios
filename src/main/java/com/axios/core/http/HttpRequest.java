@@ -9,6 +9,8 @@ import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.url.UrlBuilder;
 import com.axios.core.requestMethod.RequestMethod;
+import com.axios.core.tool.http.HttpTool;
+import com.axios.header.RequestHeader;
 
 import java.io.File;
 import java.io.IOException;
@@ -171,6 +173,8 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		GlobalCookieManager.setCookieManager(null);
 	}
 
+	/** --------------- http request --------------- */
+
 	/**
 	 * [POST请求](Post request)
 	 * @description zh - POST请求
@@ -199,4 +203,335 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		return new HttpRequest(url).method(RequestMethod.GET);
 	}
 
+	/**
+	 * [HEAD 请求](HEAD request)
+	 * @description zh - HEAD 请求
+	 * @description zh - HEAD request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:39:38
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest head(String url) {
+		return new HttpRequest(url).method(RequestMethod.HEAD);
+	}
+
+	/**
+	 * [OPTIONS 请求](OPTIONS request)
+	 * @description zh - OPTIONS 请求
+	 * @description en - OPTIONS request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:41:21
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest options(String url) {
+		return new HttpRequest(url).method(RequestMethod.OPTIONS);
+	}
+
+	/**
+	 * [PUT 请求](PUT request)
+	 * @description zh - PUT 请求
+	 * @description en - PUT request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:43:24
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest put(String url) {
+		return new HttpRequest(url).method(RequestMethod.PUT);
+	}
+
+	/**
+	 * [PATCH 请求](PATCH request)
+	 * @description zh - PATCH 请求
+	 * @description zh - PATCH request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:44:46
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest patch(String url) {
+		return new HttpRequest(url).method(RequestMethod.PATCH);
+	}
+
+	/**
+	 * [DELETE 请求](DELETE request)
+	 * @description zh - DELETE 请求
+	 * @description en - DELETE request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:45:56
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public static HttpRequest delete(String url) {
+		return new HttpRequest(url).method(RequestMethod.DELETE);
+	}
+
+	/** --------------- getter and setter --------------- */
+
+	/**
+	 * [获取请求URL](Get request URL)
+	 * @description zh - 获取请求URL
+	 * @description en - Get request URL
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:48:08
+	 * @return java.lang.String
+	 */
+	public String getUrl() {
+		return url.toString();
+	}
+
+	/**
+	 * [设置请求的URL](Set the requested URL)
+	 * @description zh - 设置请求的URL
+	 * @description en - Set the requested URL
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:48:48
+	 * @param url URL
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setUrl(String url) {
+		return setUrl(UrlBuilder.ofHttp(url, this.charset));
+	}
+
+	/**
+	 * [设置请求的URL](Set the requested URL)
+	 * @description zh - 设置请求的URL
+	 * @description en - Set the requested URL
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:49:33
+	 * @param urlBuilder URL生成器
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setUrl(UrlBuilder urlBuilder) {
+		this.url = urlBuilder;
+		return this;
+	}
+
+	/**
+	 * [设置 URLStreamHandler](set URLStreamHandler)
+	 * @description zh - 设置 URLStreamHandler
+	 * @description en - set URLStreamHandler
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:50:32
+	 * @param urlHander URLStreamHandler
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setUrlHandler(URLStreamHandler urlHandler) {
+		this.urlHandler = urlHandler;
+		return this;
+	}
+
+	/**
+	 * [获取HTTP请求方法](Get HTTP request method)
+	 * @description zh - 获取Http请求方法
+	 * @description en - Get HTTP request method
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:52:33
+	 * @return com.axios.core.requestMethod.RequestMethod
+	 */
+	public RequestMethod getMethod() {
+		return this.method;
+	}
+
+	/**
+	 * [设置请求方法](set request method)
+	 * @description zh - 设置请求方法
+	 * @description en - set request method
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:54:31
+	 * @param method RequestMethod
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setMethod(RequestMethod method) {
+		return method(method);
+	}
+
+	/**
+	 * [获取 Connection](get Connection)
+	 * @description zh - 获取 Connection
+	 * @description en - get Connection
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:56:07
+	 * @return com.axios.core.connection.Connection
+	 */
+	public Connection getConnection() {
+		return this.httpConnection;
+	}
+
+	/**
+	 * [设置请求方法](set request method)
+	 * @description zh - 设置请求方法
+	 * @description en - set request method
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:56:41
+	 * @param method RequestMethod
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest method(RequestMethod method) {
+		this.method = method;
+		return this;
+	}
+
+	/** --------------- getter and setter --------------- */
+
+	/**
+	 * [设置contentType](set contentType)
+	 * @description zh - 设置contentType
+	 * @description en - set contentType
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 19:59:48
+	 * @param contentType contentType
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest contentType(String contentType) {
+		header(RequestHeader.CONTENT_TYPE, contentType);
+		return this;
+	}
+
+	/**
+	 * [是否是长链接](Is it a long link)
+	 * @description zh - 是否是长链接
+	 * @description en - Is it a long link
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:03:21
+	 * @param isKeepAlive 是否长链接
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest keepAlive(boolean isKeepAlive) {
+		header(RequestHeader.CONNECTION, isKeepAlive ? "Keep-Alive" : "Close");
+		return this;
+	}
+
+	/**
+	 * [获取是否为长连接](Gets whether it is a long connection)
+	 * @description zh - 获取是否为长连接
+	 * @description en - Gets whether it is a long connection
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:04:58
+	 * @return boolean
+	 */
+	public boolean isKeepAlive() {
+		String connection = header(RequestHeader.CONNECTION);
+		return connection == null ?
+			false == HTTP_1_0.equalsIgnoreCase(httpVersion) :
+			false == "close".equalsIgnoreCase(connection);
+	}
+
+	/**
+	 * [获取内容长度](Get content length)
+	 * @description zh - 获取内容长度
+	 * @description en - Get content length
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:06:07
+	 * @return java.lang.String
+	 */
+	public String contentLength() {
+		return header(RequestHeader.CONTENT_LENGTH);
+	}
+
+	/**
+	 * [设置内容长度](set content length)
+	 * @description zh - 设置内容长度
+	 * @description en - set content length
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:06:47
+	 * @param value 长度
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest contentLength(int value) {
+		header(RequestHeader.CONTENT_LENGTH, String.valueOf(value));
+		return this;
+	}
+
+	/**
+	 * [设置Cookie](set Cookie)
+	 * @description zh - 设置Cookie
+	 * @description en - set Cookie
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:07:49
+	 * @param cookie Cookie值数组
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest cookie(Collection<HttpCookie> cookies) {
+		return cookie(HttpTool.isEmpty(cookies) ? null : cookies.toArray(new HttpCookie[0]));
+	}
+
+	/**
+	 * [设置Cookie](set Cookie)
+	 * @description zh - 设置Cookie
+	 * @description en - set Cookie
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:09:56
+	 * @param cookie Cookie值数组
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest cookie(HttpCookie... cookies) {
+		if (HttpTool.isEmpty(cookies)) {
+			return disableCookie();
+		}
+		return cookie(HttpTool.join(cookies, "; ", null, null));
+	}
+
+	/**
+	 * [设置Cookie](set Cookie)
+	 * @description zh - 设置Cookie
+	 * @description en - set Cookie
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:11:51
+	 * @param cookie Cookie
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest cookie(String cookie) {
+		this.cookie = cookie;
+		return this;
+	}
+
+	/**
+	 * [禁用默认Cookie行为](Disable default cookie behavior)
+	 * @description zh - 禁用默认Cookie行为
+	 * @description en - Disable default cookie behavior
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:12:27
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest disableCookie() {
+		return cookie("");
+	}
+
+	/**
+	 * [打开默认的Cookie行为](Open default cookie behavior)
+	 * @description zh - 打开默认的Cookie行为
+	 * @description en - Open default cookie behavior
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-26 20:14:26
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest enableDefaultCookie() {
+		return cookie((String) null);
+	}
 }
