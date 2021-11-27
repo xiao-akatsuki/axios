@@ -9,7 +9,10 @@ import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.url.UrlBuilder;
 import com.axios.core.requestMethod.RequestMethod;
+import com.axios.core.resource.Resource;
+import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.http.HttpTool;
+import com.axios.core.tool.ssl.SSLTool;
 import com.axios.header.RequestHeader;
 
 import java.io.File;
@@ -22,6 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URLStreamHandler;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -533,5 +537,232 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 */
 	public HttpRequest enableDefaultCookie() {
 		return cookie((String) null);
+	}
+
+	/** --------------- form --------------- */
+
+	/**
+	 * [设置表单数据](set form data)
+	 * @description zh - 设置表单数据
+	 * @description en - set form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:50:42
+	 * @param name 键
+	 * @param value 值
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, Object value) {
+		if (UrlTool.isBlank(name) || UrlTool.isNull(value)) {
+			return this;
+		}
+		// 停用body
+		this.bodyBytes = null;
+		if (value instanceof File) {
+			// 文件上传
+			return this.form(name, (File) value);
+		}
+		// 普通值
+		String strValue;
+		if (value instanceof Iterable) {
+			// 列表对象
+			strValue = HttpTool.join((Iterable<?>) value, ",");
+		} else if (HttpTool.isArray(value)) {
+			if (File.class == HttpTool.getComponentType(value)) {
+				// 多文件
+				return this.form(name, (File[]) value);
+			}
+			// 数组对象
+			strValue = HttpTool.join((Object[]) value, ",", null, null);
+		} else {
+			// 其他对象一律转换为字符串
+			strValue = value.toString();
+		}
+		return putToForm(name, strValue);
+	}
+
+	/**
+	 * [设置表单数据](set form data)
+	 * @description zh - 设置表单数据
+	 * @description en - set form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:51:44
+	 * @param name 键
+	 * @param value 值
+	 * @param parameters 参数对
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, Object value, Object... parameters) {
+		form(name, value);
+
+		for (int i = 0; i < parameters.length; i += 2) {
+			form(parameters[i].toString(), parameters[i + 1]);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置map类型表单数据](Set map type form data)
+	 * @description zh - 设置map类型表单数据
+	 * @description en - Set map type form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:52:52
+	 * @param formMap 表单内容
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(Map<String, Object> formMap) {
+		if (UrlTool.isNotEmpty(formMap)) {
+			formMap.forEach(this::form);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置map类型表单数据](Set map type form data)
+	 * @description zh - 设置map类型表单数据
+	 * @description en - Set map type form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:54:02
+	 * @param formMapStr 表单内容
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest formStr(Map<String, String> formMapStr) {
+		if (UrlTool.isNotEmpty(formMapStr)) {
+			formMapStr.forEach(this::form);
+		}
+		return this;
+	}
+
+	/**
+	 * [文件表单项](file form item)
+	 * @description zh - 文件表单项
+	 * @description en - file form item
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:54:59
+	 * @param name 键
+	 * @param files 文件数组
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, File... files) {
+		if (HttpTool.isEmpty(files)) {
+			return this;
+		}
+		if (1 == files.length) {
+			final File file = files[0];
+			return form(name, file, file.getName());
+		}
+		return form(name, new MultiFileResource(files));
+	}
+
+	/**
+	 * [文件表单项](file form item)
+	 * @description zh - 文件表单项
+	 * @description en - file form item
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:56:26
+	 * @param name 键
+	 * @param file 文件
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, File file) {
+		return form(name, file, file.getName());
+	}
+
+	/**
+	 * [文件表单项](file form item)
+	 * @description zh - 文件表单项
+	 * @description en - file form item
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 13:57:25
+	 * @param name 键
+	 * @param file 文件
+	 * @param fileName 文件名
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, File file, String fileName) {
+		if (null != file) {
+			form(name, new FileResource(file, fileName));
+		}
+		return this;
+	}
+
+	/**
+	 * [文件表单项](file form item)
+	 * @description zh - 文件表单项
+	 * @description en - file form item
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 14:01:43
+	 * @param name 键
+	 * @param fileBytes 上传的文件
+	 * @param fileName 文件名
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, byte[] fileBytes, String fileName) {
+		if (null != fileBytes) {
+			form(name, new BytesResource(fileBytes, fileName));
+		}
+		return this;
+	}
+
+	/**
+	 * [文件表单项](file form item)
+	 * @description zh - 文件表单项
+	 * @description en - file form item
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 14:02:33
+	 * @param name 键
+	 * @param resource 数据源
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest form(String name, Resource resource) {
+		if (null != resource) {
+			if (false == isKeepAlive()) {
+				keepAlive(true);
+			}
+
+			this.isMultiPart = true;
+			return putToForm(name, resource);
+		}
+		return this;
+	}
+
+	/**
+	 * [获取表单数据](Get form data)
+	 * @description zh - 获取表单数据
+	 * @description en - Get form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 14:03:05
+	 * @return java.util.Map<java.lang.String, java.lang.Object>
+	 */
+	public Map<String, Object> form() {
+		return this.form;
+	}
+
+	/**
+	 * [获取文件表单数据](Get file form data)
+	 * @description zh - 获取文件表单数据
+	 * @description en - Get file form data
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-27 14:04:33
+	 * @return java.util.Map<java.lang.String, Resource>
+	 */
+	public Map<String, Resource> fileForm() {
+		final Map<String, Resource> result = new HashMap<>();
+		this.form.forEach((key, value) -> {
+			if (value instanceof Resource) {
+				result.put(key, (Resource) value);
+			}
+		});
+		return result;
 	}
 }
