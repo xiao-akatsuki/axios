@@ -161,4 +161,9 @@ public class HttpTool {
 		return null;
     }
 
+	public static Class<?> getComponentType(Object array) {
+		return null == array ? null : array.getClass().getComponentType();
+	}
+
+
 }
