@@ -8,6 +8,7 @@ import com.axios.core.config.global.GlobalHeaders;
 import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.url.UrlBuilder;
+import com.axios.core.http.url.UrlQuery;
 import com.axios.core.requestMethod.RequestMethod;
 import com.axios.core.resource.BytesResource;
 import com.axios.core.resource.FileResource;
@@ -15,8 +16,12 @@ import com.axios.core.resource.MultiFileResource;
 import com.axios.core.resource.Resource;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.http.HttpTool;
+import com.axios.core.tool.io.IoTool;
 import com.axios.core.tool.ssl.SSLTool;
+import com.axios.core.type.ContentType;
+import com.axios.exception.IORuntimeException;
 import com.axios.header.RequestHeader;
+import com.axios.request.Request;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URLStreamHandler;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -767,5 +773,273 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 			}
 		});
 		return result;
+	}
+
+	/** --------------- body --------------- */
+
+	/**
+	 * [设置内容主体](Set content body)
+	 * @description zh - 设置内容主体
+	 * @description en - Set content body
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-28 20:07:22
+	 * @param body 请求体
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest body(String body) {
+		return this.body(body, null);
+	}
+
+	/**
+	 * [设置内容主体](Set content body)
+	 * @description zh - 设置内容主体
+	 * @description en - Set content body
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-28 20:09:20
+	 * @param body
+	 * @param contentType
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest body(String body, String contentType) {
+		byte[] bytes = bytes(body, this.charset);
+		body(bytes);
+		this.form = null;
+
+		if (null != contentType) {
+			this.contentType(contentType);
+		} else {
+			contentType = getContentTypeByRequestBody(body);
+			if (null != contentType && ContentType.isDefault(this.header(RequestHeader.CONTENT_TYPE))) {
+				if (null != this.charset) {
+					contentType = ContentType.build(contentType, this.charset);
+				}
+				this.contentType(contentType);
+			}
+		}
+		// 判断是否为rest请求
+		if (null != getContainsStrIgnoreCase(contentType, "json", "xml")) {
+			this.isRest = true;
+			contentLength(bytes.length);
+		}
+		return this;
+	}
+
+	/**
+	 * [设置主体字节码](Set body bytecode)
+	 * @description zh - 设置主体字节码
+	 * @description en - Set body bytecode
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-28 20:10:12
+	 * @param bodyBytes 主体字节码
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest body(byte[] bodyBytes) {
+		if (null != bodyBytes) {
+			this.bodyBytes = bodyBytes;
+		}
+		return this;
+	}
+
+	/** --------------- private --------------- */
+
+	private HttpResponse doExecute(boolean isAsync, HttpInterceptor.Interceptor interceptors) {
+		if (null != interceptors) {
+			for (HttpInterceptor interceptor : interceptors) {
+				interceptor.process(this);
+			}
+		}
+
+		// 初始化URL
+		urlWithParamIfGet();
+		// 初始化 connection
+		initConnection();
+		// 发送请求
+		send();
+
+		// 手动实现重定向
+		HttpResponse httpResponse = sendRedirectIfPossible(isAsync);
+
+		// 获取响应
+		if (null == httpResponse) {
+			httpResponse = new HttpResponse(this.httpConnection, this.charset, isAsync, isIgnoreResponseBody());
+		}
+
+		return httpResponse;
+	}
+
+	private void initConnection() {
+		if (null != this.httpConnection) {
+			this.httpConnection.disconnectQuietly();
+		}
+
+		this.httpConnection = Connection
+				.create(this.url.toURL(this.urlHandler), this.proxy)
+				.setConnectTimeout(this.connectionTimeout)
+				.setReadTimeout(this.readTimeout)
+				.setMethod(this.method)
+				.setHttpsInfo(this.hostnameVerifier, this.ssf)
+				.setInstanceFollowRedirects(this.maxRedirectCount > 0)
+				.setChunkedStreamingMode(this.blockSize)
+				.header(this.headers, true);
+
+		if (null != this.cookie) {
+			this.httpConnection.setCookie(this.cookie);
+		} else {
+			GlobalCookieManager.add(this.httpConnection);
+		}
+		if (this.isDisableCache) {
+			this.httpConnection.disableCache();
+		}
+	}
+
+	private void urlWithParamIfGet() {
+		if (RequestMethod.GET.equals(method) && false == this.isRest) {
+			if (ArrayUtil.isNotEmpty(this.bodyBytes)) {
+				this.url.getQuery().parse(StrUtil.str(this.bodyBytes, this.charset), this.charset);
+			} else {
+				this.url.getQuery().addAll(this.form);
+			}
+		}
+	}
+
+	private HttpResponse sendRedirectIfPossible(boolean isAsync) {
+		if (this.maxRedirectCount < 1) {
+			return null;
+		}
+
+		if (this.httpConnection.getHttpURLConnection().getInstanceFollowRedirects()) {
+			int responseCode;
+			try {
+				responseCode = httpConnection.responseCode();
+			} catch (IOException e) {
+				this.httpConnection.disconnectQuietly();
+				throw new HttpException(e);
+			}
+
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				if (HttpStatus.isRedirected(responseCode)) {
+					setUrl(httpConnection.header(RequestHeader.LOCATION));
+					if (redirectCount < this.maxRedirectCount) {
+						redirectCount++;
+						return doExecute(isAsync, null);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private void send() throws IORuntimeException {
+		try {
+			if (RequestMethod.POST.equals(this.method)
+					|| RequestMethod.PUT.equals(this.method)
+					|| RequestMethod.DELETE.equals(this.method)
+					|| this.isRest) {
+				if (isMultipart()) {
+					sendMultipart();
+				} else {
+					sendFormUrlEncoded();
+				}
+			} else {
+				this.httpConnection.connect();
+			}
+		} catch (IOException e) {
+			this.httpConnection.disconnectQuietly();
+			throw new IORuntimeException(e);
+		}
+	}
+
+	private void sendFormUrlEncoded() throws IOException {
+		if (UrlTool.isBlank(this.header(RequestHeader.CONTENT_TYPE))) {
+			this.httpConnection.header(RequestHeader.CONTENT_TYPE, ContentType.FORM_URLENCODED.toString(this.charset), true);
+		}
+
+		byte[] content;
+		if (HttpTool.isNotEmpty(this.bodyBytes)) {
+			content = this.bodyBytes;
+		} else {
+			content = bytes(getFormUrlEncoded(), this.charset);
+		}
+		IoTool.write(this.httpConnection.getOutputStream(), true, content);
+	}
+
+	private String getFormUrlEncoded() {
+		return UrlQuery.of(this.form, true).build(this.charset);
+	}
+
+	private void sendMultipart() throws IOException {
+		setMultipart();
+
+		try (OutputStream out = this.httpConnection.getOutputStream()) {
+			MultipartBody.create(this.form, this.charset).write(out);
+		}
+	}
+
+	private void setMultipart() {
+		this.httpConnection.header(RequestHeader.CONTENT_TYPE, MultipartBody.getContentType(), true);
+	}
+
+	private boolean isIgnoreResponseBody() {
+		return RequestMethod.HEAD == this.method
+				|| RequestMethod.CONNECT == this.method
+				|| RequestMethod.OPTIONS == this.method
+				|| RequestMethod.TRACE == this.method;
+	}
+
+	private boolean isMultipart() {
+		if (this.isMultiPart) {
+			return true;
+		}
+		final String contentType = header(RequestHeader.CONTENT_TYPE);
+		return UrlTool.isNotEmpty(contentType) &&
+				contentType.startsWith(ContentType.MULTIPART.getValue());
+	}
+
+	private HttpRequest putToForm(String name, Object value) {
+		if (null == name || null == value) {
+			return this;
+		}
+		if (null == this.form) {
+			this.form = new LinkedHashMap<>();
+		}
+		this.form.put(name, value);
+		return this;
+	}
+
+	private byte[] bytes(CharSequence str, Charset charset) {
+		if (str == null) {
+			return null;
+		}
+		if (null == charset) {
+			return str.toString().getBytes();
+		}
+		return str.toString().getBytes(charset);
+	}
+
+	private String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
+		if (UrlTool.isEmpty(str) || HttpTool.isEmpty(testStrs)) {
+			return null;
+		}
+		for (CharSequence testStr : testStrs) {
+			if (containsIgnoreCase(str, testStr)) {
+				return testStr.toString();
+			}
+		}
+		return null;
+	}
+
+	private boolean containsIgnoreCase(CharSequence str, CharSequence testStr) {
+		if (null == str) {
+			return null == testStr;
+		}
+		return str.toString().toLowerCase().contains(testStr.toString().toLowerCase());
+	}
+
+	private String getContentTypeByRequestBody(String body) {
+		final ContentType contentType = ContentType.get(body);
+		return (null == contentType) ? null : contentType.toString();
 	}
 }
