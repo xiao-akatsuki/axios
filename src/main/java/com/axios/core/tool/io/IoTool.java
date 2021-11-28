@@ -1,36 +1,15 @@
 package com.axios.core.tool.io;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PushbackInputStream;
-import java.io.PushbackReader;
 import java.io.Reader;
-import java.io.Serializable;
-import java.io.Writer;
 import java.nio.CharBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.Checksum;
 
 import com.axios.core.assertion.Assert;
 import com.axios.exception.IORuntimeException;
@@ -193,6 +172,39 @@ public class IoTool {
 
 		// 未知bytes总量的流
 		return read(in, isClose).toByteArray();
+	}
+
+	/**
+	 * [从流中读取内容](Read content from stream)
+	 * @description zh - 从流中读取内容
+	 * @description en - Read content from stream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-11-28 14:40:25
+	 * @param in InputStream
+	 * @param isClose 读取完毕后是否关闭流
+	 * @throws com.axios.exception.IORuntimeException
+	 * @return com.axios.core.tool.io.FastByteArrayOutputStream
+	 */
+	public static FastByteArrayOutputStream read(InputStream in, boolean isClose) throws IORuntimeException {
+		final FastByteArrayOutputStream out;
+		if (in instanceof FileInputStream) {
+			try {
+				out = new FastByteArrayOutputStream(in.available());
+			} catch (IOException e) {
+				throw new IORuntimeException(e);
+			}
+		} else {
+			out = new FastByteArrayOutputStream();
+		}
+		try {
+			copy(in, out);
+		} finally {
+			if (isClose) {
+				close(in);
+			}
+		}
+		return out;
 	}
 
 	/**
