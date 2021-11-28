@@ -16,6 +16,8 @@ public enum RequestMethod {
     OPTIONS,
     POST,
     PUT,
-    PATCH
+    PATCH,
+	CONNECT,
+	TRACE
 
 }
