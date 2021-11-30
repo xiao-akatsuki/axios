@@ -22,6 +22,7 @@ import com.axios.core.type.ContentType;
 import com.axios.exception.IORuntimeException;
 import com.axios.header.RequestHeader;
 import com.axios.request.Request;
+import com.axios.response.HttpResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -851,22 +852,13 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 				interceptor.process(this);
 			}
 		}
-
-		// 初始化URL
 		urlWithParamIfGet();
-		// 初始化 connection
 		initConnection();
-		// 发送请求
 		send();
-
-		// 手动实现重定向
 		HttpResponse httpResponse = sendRedirectIfPossible(isAsync);
-
-		// 获取响应
 		if (null == httpResponse) {
 			httpResponse = new HttpResponse(this.httpConnection, this.charset, isAsync, isIgnoreResponseBody());
 		}
-
 		return httpResponse;
 	}
 
