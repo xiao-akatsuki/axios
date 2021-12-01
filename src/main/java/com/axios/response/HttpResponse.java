@@ -126,4 +126,18 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 		return contentLength;
 	}
 
+	/**
+	 * [是否为gzip压缩过的内容](Is it gzip compressed content)
+	 * @description zh - 是否为gzip压缩过的内容
+	 * @description en - Is it gzip compressed content
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-01 21:28:12
+	 * @return boolean
+	 */
+	public boolean isGzip() {
+		final String contentEncoding = contentEncoding();
+		return "gzip".equalsIgnoreCase(contentEncoding);
+	}
+
 }
