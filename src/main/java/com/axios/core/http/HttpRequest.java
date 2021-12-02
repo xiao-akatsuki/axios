@@ -19,6 +19,7 @@ import com.axios.core.tool.http.HttpTool;
 import com.axios.core.tool.io.IoTool;
 import com.axios.core.tool.ssl.SSLTool;
 import com.axios.core.type.ContentType;
+import com.axios.exception.HttpException;
 import com.axios.exception.IORuntimeException;
 import com.axios.header.RequestHeader;
 import com.axios.request.Request;
