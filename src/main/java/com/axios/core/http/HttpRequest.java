@@ -890,8 +890,8 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 
 	private void urlWithParamIfGet() {
 		if (RequestMethod.GET.equals(method) && false == this.isRest) {
-			if (ArrayUtil.isNotEmpty(this.bodyBytes)) {
-				this.url.getQuery().parse(StrUtil.str(this.bodyBytes, this.charset), this.charset);
+			if ((null != this.bodyBytes && this.bodyBytes.length != 0)) {
+				this.url.getQuery().parse(HttpTool.str(this.bodyBytes, this.charset), this.charset);
 			} else {
 				this.url.getQuery().addAll(this.form);
 			}
@@ -951,7 +951,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		}
 
 		byte[] content;
-		if (HttpTool.isNotEmpty(this.bodyBytes)) {
+		if ((null != this.bodyBytes && this.bodyBytes.length != 0)) {
 			content = this.bodyBytes;
 		} else {
 			content = bytes(getFormUrlEncoded(), this.charset);
