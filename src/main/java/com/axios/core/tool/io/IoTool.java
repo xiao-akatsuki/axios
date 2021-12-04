@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -223,6 +224,85 @@ public class IoTool {
 			} catch (Exception e) {
 				// 静默关闭
 			}
+		}
+	}
+
+	/**
+	 * [将byte[]写到流中](Write byte [] to stream)
+	 * @description zh - 将byte[]写到流中
+	 * @description en - Write byte [] to stream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-04 09:33:46
+	 * @param out 输出流
+	 * @param isCloseOut 写入完毕是否关闭输出流
+	 * @param content 写入的内容
+	 * @throws com.axios.exception.IORuntimeException
+	 */
+    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws IORuntimeException {
+		try {
+			out.write(content);
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		} finally {
+			if (isCloseOut) {
+				close(out);
+			}
+		}
+	}
+
+	/**
+	 * [将多部分内容写到流中，自动转换为字符串](Write multiple parts to the stream and automatically convert them to strings)
+	 * @description zh - 将多部分内容写到流中，自动转换为字符串
+	 * @description en - Write multiple parts to the stream and automatically convert them to strings
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-04 10:37:14
+	 * @param out 输出流
+	 * @param charset 写出的内容的字符集
+	 * @param isCloseOut 写入完毕是否关闭输出流
+	 * @param contents 写入的内容
+	 * @throws com.axios.exception.IORuntimeException
+	 */
+	public static void write(OutputStream out, Charset charset, boolean isCloseOut, Object... contents) throws IORuntimeException {
+		OutputStreamWriter osw = null;
+		try {
+			osw = getWriter(out, charset);
+			for (Object content : contents) {
+				if (content != null) {
+					osw.write(content.toString());
+				}
+			}
+			osw.flush();
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		} finally {
+			if (isCloseOut) {
+				close(osw);
+			}
+		}
+	}
+
+	/**
+	 * [获得一个Writer](Get a writer)
+	 * @description zh - 获得一个Writer
+	 * @description en - Get a writer
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-04 10:38:37
+	 * @param out 输入流
+	 * @param charset 字符集
+	 * @return java.io.OutputStreamWriter
+	 */
+	public static OutputStreamWriter getWriter(OutputStream out, Charset charset) {
+		if (null == out) {
+			return null;
+		}
+
+		if (null == charset) {
+			return new OutputStreamWriter(out);
+		} else {
+			return new OutputStreamWriter(out, charset);
 		}
 	}
 }
