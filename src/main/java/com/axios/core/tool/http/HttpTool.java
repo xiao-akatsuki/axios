@@ -1,13 +1,19 @@
 package com.axios.core.tool.http;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
 import com.axios.core.tool.text.StrJoiner;
+import com.axios.exception.IORuntimeException;
 
 /**
  * [HTTP 工具类](HTTP Tool)
@@ -165,5 +171,64 @@ public class HttpTool {
 		return null == array ? null : array.getClass().getComponentType();
 	}
 
+	public static String getMimeType(String filePath, String defaultValue) {
+		return defaultIfNull(getMimeType(filePath), defaultValue);
+	}
+
+	public static <T> T defaultIfNull(final T object, final T defaultValue) {
+		return isNull(object) ? defaultValue : object;
+	}
+
+	public static boolean isNull(Object obj) {
+		//noinspection ConstantConditions
+		return null == obj || obj.equals(null);
+	}
+
+	/**
+	 * [根据文件扩展名获得MimeType](Get mimeType from file extension)
+	 * @description zh - 根据文件扩展名获得MimeType
+	 * @description en - Get mimeType from file extension
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-04 10:54:22
+	 * @param filePath 文件路径或文件名
+	 * @return java.lang.String
+	 */
+	public static String getMimeType(String filePath) {
+		String contentType = URLConnection.getFileNameMap().getContentTypeFor(filePath);
+		if (null == contentType) {
+			// 补充一些常用的mimeType
+			if (filePath.endsWith(".css")) {
+				contentType = "text/css";
+			} else if (filePath.endsWith(".js")) {
+				contentType = "application/x-javascript";
+			}
+		}
+
+		// 补充
+		if (null == contentType) {
+			contentType = getMimeType(Paths.get(filePath));
+		}
+
+		return contentType;
+	}
+
+	/**
+	 * [获得文件的MimeType](Gets the mimeType of the file)
+	 * @description zh - 获得文件的MimeType
+	 * @description en - Gets the mimeType of the file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-04 10:53:52
+	 * @param file 文件
+	 * @return java.lang.String
+	 */
+	public static String getMimeType(Path file) {
+		try {
+			return Files.probeContentType(file);
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		}
+	}
 
 }
