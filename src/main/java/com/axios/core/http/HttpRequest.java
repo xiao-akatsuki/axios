@@ -3,6 +3,7 @@ package com.axios.core.http;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.axios.core.body.MultipartBody;
 import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.config.global.GlobalHeaders;
 import com.axios.core.config.global.HttpGlobalConfig;
@@ -17,13 +18,12 @@ import com.axios.core.resource.Resource;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.http.HttpTool;
 import com.axios.core.tool.io.IoTool;
-import com.axios.core.tool.ssl.SSLTool;
 import com.axios.core.type.ContentType;
 import com.axios.exception.HttpException;
 import com.axios.exception.IORuntimeException;
 import com.axios.header.RequestHeader;
-import com.axios.request.Request;
 import com.axios.response.HttpResponse;
+import com.axios.status.Status;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,6 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URLStreamHandler;
 import java.nio.charset.Charset;
@@ -39,7 +38,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * [http请求类](HTTP request class)
@@ -913,7 +911,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 			}
 
 			if (responseCode != HttpURLConnection.HTTP_OK) {
-				if (HttpStatus.isRedirected(responseCode)) {
+				if (Status.isRedirected(responseCode)) {
 					setUrl(httpConnection.header(RequestHeader.LOCATION));
 					if (redirectCount < this.maxRedirectCount) {
 						redirectCount++;
