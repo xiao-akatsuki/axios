@@ -1,5 +1,6 @@
 package com.axios.core.tool.io;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.FileInputStream;
@@ -304,5 +305,20 @@ public class IoTool {
 		} else {
 			return new OutputStreamWriter(out, charset);
 		}
+	}
+
+	/**
+	 * [转换为 BufferedOutputStream](Convert to BufferedOutputStream)
+	 * @description zh - 转换为 BufferedOutputStream
+	 * @description en - Convert to BufferedOutputStream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-05 09:54:25
+	 * @param out OutputStream
+	 * @return java.io.BufferedOutputStream
+	 */
+	public static BufferedOutputStream toBuffered(OutputStream out) {
+		Assert.notNull(out, "OutputStream must be not null!");
+		return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
 	}
 }
