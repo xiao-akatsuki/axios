@@ -19,6 +19,7 @@ import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.HttpBase;
 import com.axios.core.tool.UrlTool;
+import com.axios.core.tool.file.FileTool;
 import com.axios.core.tool.http.HttpTool;
 import com.axios.core.tool.io.FastByteArrayOutputStream;
 import com.axios.core.tool.io.IoTool;
@@ -328,7 +329,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	public long writeBody(File targetFileOrDir) {
 		Assert.notNull(targetFileOrDir, "[targetFileOrDir] must be not null!");
 		final File outFile = completeFileNameFromHeader(targetFileOrDir);
-		return writeBody(FileUtil.getOutputStream(outFile), true);
+		return writeBody(FileTool.getOutputStream(outFile), true);
 	}
 
 	/**
