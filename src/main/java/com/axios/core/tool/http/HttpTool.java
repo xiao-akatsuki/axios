@@ -5,13 +5,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import com.axios.core.tool.UrlTool;
+import com.axios.core.tool.regular.RegularTool;
 import com.axios.core.tool.text.StrJoiner;
 import com.axios.exception.IORuntimeException;
 
@@ -24,6 +28,16 @@ import com.axios.exception.IORuntimeException;
  * @since 2021-11-19 16:49:54
  */
 public class HttpTool {
+
+	/**
+	 * 正则：Content-Type中的编码信息
+	 */
+	public static final Pattern CHARSET_PATTERN = Pattern.compile("charset\\s*=\\s*([a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * 正则：匹配meta标签的编码信息
+	 */
+	public static final Pattern META_CHARSET_PATTERN = Pattern.compile("<meta[^>]*?charset\\s*=\\s*['\"]?([a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * [数组是否为空](is the array empty)
@@ -229,6 +243,48 @@ public class HttpTool {
 		} catch (IOException e) {
 			throw new IORuntimeException(e);
 		}
+	}
+
+	/**
+	 * [从流中读取内容](Read content from stream)
+	 * @description zh - 从流中读取内容
+	 * @description en - Read content from stream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-05 09:35:10
+	 * @param contentBytes 内容byte数组
+	 * @param charset 字符集
+	 * @param isGetCharsetFromContent 是否从返回内容中获得编码信息
+	 * @return java.lang.String
+	 */
+	public static String getString(byte[] contentBytes, Charset charset, boolean isGetCharsetFromContent) {
+		if (null == contentBytes) {
+			return null;
+		}
+
+		if (null == charset) {
+			charset = StandardCharsets.UTF_8;
+		}
+		String content = new String(contentBytes, charset);
+		if (isGetCharsetFromContent) {
+			final String charsetInContentStr = RegularTool.get(META_CHARSET_PATTERN, content, 1);
+			if (UrlTool.isNotBlank(charsetInContentStr)) {
+				Charset charsetInContent = null;
+				try {
+					charsetInContent = Charset.forName(charsetInContentStr);
+				} catch (Exception e) {
+					if (UrlTool.containsIgnoreCase(charsetInContentStr, "utf-8") || UrlTool.containsIgnoreCase(charsetInContentStr, "utf8")) {
+						charsetInContent = StandardCharsets.UTF_8;
+					} else if (UrlTool.containsIgnoreCase(charsetInContentStr, "gbk")) {
+						charsetInContent = Charset.forName("GBK");
+					}
+				}
+				if (null != charsetInContent && false == charset.equals(charsetInContent)) {
+					content = new String(contentBytes, charsetInContent);
+				}
+			}
+		}
+		return content;
 	}
 
 }
