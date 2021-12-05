@@ -1,4 +1,4 @@
-<p align="center"><img width="100" src="/logo/logo.png" alt="axios logo"></p>
+<p align="center"><img src="/logo/logo.png" alt="axios logo"></p>
 
 <p align="center">
 	<a href="https://mvnrepository.com/artifact/io.github.xiao-organization/axios">
