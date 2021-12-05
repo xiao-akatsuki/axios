@@ -592,4 +592,19 @@ public class UrlTool {
 		return collection == null || collection.isEmpty();
 	}
 
+	/**
+	 * [是否包含特定字符](Does it contain specific characters)
+	 * @description zh - 是否包含特定字符
+	 * @description en - Does it contain specific characters
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-05 09:29:15
+	 * @param str 被检测字符串
+	 * @param testStr 被测试是否包含的字符串
+	 * @return boolean
+	 */
+	public static boolean containsIgnoreCase(CharSequence str, CharSequence testStr) {
+		return null == str ? null == testStr : str.toString().toLowerCase().contains(testStr.toString().toLowerCase());
+	}
+
 }
