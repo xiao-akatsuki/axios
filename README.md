@@ -1,11 +1,17 @@
 <p align="center"><img width="100" src="/logo/logo.png" alt="axios logo"></p>
 
 <p align="center">
-[![maven-central](https://img.shields.io/maven-central/v/io.github.xiao-organization/axios.svg)](https://mvnrepository.com/artifact/io.github.xiao-organization/axios) 
-[![java-doc](https://www.javadoc.io/badge/io.github.xiao-organization/axios.svg)](https://www.javadoc.io/doc/io.github.xiao-organization/axios)
+	<a href="https://mvnrepository.com/artifact/io.github.xiao-organization/axios">
+		<img src="https://img.shields.io/maven-central/v/io.github.xiao-organization/axios.svg" alt="maven-central">
+	</a>
+	<a href="https://www.javadoc.io/doc/io.github.xiao-organization/axios">
+		<img src="https://www.javadoc.io/badge/io.github.xiao-organization/axios.svg" alt="java-doc">
+	</a>
 </p>
 
-<p align="center"> <h1>axios</h1> </p>
+<p align="center">
+	<h1>axios</h1>
+</p>
 
 This repository contains simple tools written in 100% Java.
 
