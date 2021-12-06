@@ -346,16 +346,16 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	public long writeBody(File targetFileOrDir, String tempFileSuffix) {
 		Assert.notNull(targetFileOrDir, "[targetFileOrDir] must be not null!");
 		File outFile = completeFileNameFromHeader(targetFileOrDir);
-		tempFileSuffix = UrlTool.isBlank(tempFileSuffix) ? ".temp" : UrlTool.addPrefixIfNot(tempFileSuffix, ".");
+		tempFileSuffix = UrlTool.isBlank(tempFileSuffix) ? ".temp" : UrlTool.prependIfMissing(tempFileSuffix, ".", false, ".");
 		final String fileName = outFile.getName();
 		final String tempFileName = fileName + tempFileSuffix;
 		outFile = new File(outFile.getParentFile(), tempFileName);
 		long length;
 		try {
 			length = writeBody(outFile);
-			FileUtil.rename(outFile, fileName, true);
+			FileTool.rename(outFile, fileName, true);
 		} catch (Throwable e) {
-			FileUtil.del(outFile);
+			FileTool.del(outFile);
 			throw new HttpException(e);
 		}
 		return length;
@@ -374,7 +374,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	public File writeBodyForFile(File targetFileOrDir) {
 		Assert.notNull(targetFileOrDir, "[targetFileOrDir] must be not null!");
 		final File outFile = completeFileNameFromHeader(targetFileOrDir);
-		writeBody(FileUtil.getOutputStream(outFile), true);
+		writeBody(FileTool.getOutputStream(outFile), true);
 		return outFile;
 	}
 
@@ -389,7 +389,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	 * @return long
 	 */
 	public long writeBody(String targetFileOrDir) {
-		return writeBody(FileUtil.file(targetFileOrDir));
+		return writeBody(FileTool.file(targetFileOrDir));
 	}
 
 	/** ---------------- Override ---------------- */
@@ -439,7 +439,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 				fileName = URLUtil.encodeQuery(path, StandardCharsets.UTF_8);
 			}
 		}
-		return FileUtil.file(targetFileOrDir, fileName);
+		return FileTool.file(targetFileOrDir, fileName);
 	}
 
 	/** ---------------- private ---------------- */
