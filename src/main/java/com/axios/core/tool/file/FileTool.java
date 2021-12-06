@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import com.axios.core.assertion.Assert;
 import com.axios.core.tool.io.IoTool;
 import com.axios.exception.IORuntimeException;
 
@@ -126,5 +127,119 @@ public class FileTool {
 			dir.mkdirs();
 		}
 		return dir;
+	}
+
+	public static boolean del(File file) throws IORuntimeException {
+		if (file == null || false == file.exists()) {
+			// 如果文件不存在或已被删除，此处返回true表示删除成功
+			return true;
+		}
+
+		if (file.isDirectory()) {
+			// 清空目录下所有文件和目录
+			boolean isOk = clean(file);
+			if (false == isOk) {
+				return false;
+			}
+		}
+
+		// 删除文件或清空后的目录
+		final Path path = file.toPath();
+		try {
+			delFile(path);
+		} catch (DirectoryNotEmptyException e) {
+			// 遍历清空目录没有成功，此时补充删除一次（可能存在部分软链）
+			del(path);
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		}
+
+		return true;
+	}
+
+	public static boolean del(Path path) throws IORuntimeException {
+		if (Files.notExists(path)) {
+			return true;
+		}
+
+		try {
+			if (isDirectory(path,false)) {
+				Files.walkFileTree(path, DelVisitor.INSTANCE);
+			} else {
+				delFile(path);
+			}
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		}
+		return true;
+	}
+
+	public static Path rename(File file, String newName, boolean isOverride) {
+		return move(file.toPath(), file.toPath().resolveSibling(newName), isOverride);
+	}
+
+	public static Path move(Path src, Path target, boolean isOverride) {
+		Assert.notNull(src, "Src path must be not null !");
+		Assert.notNull(target, "Target path must be not null !");
+
+		if (isDirectory(target, false)) {
+			target = target.resolve(src.getFileName());
+		}
+		return moveContent(src, target, isOverride);
+	}
+
+	public static boolean isDirectory(Path path, boolean isFollowLinks) {
+		if (null == path) {
+			return false;
+		}
+		final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+		return Files.isDirectory(path, options);
+	}
+
+	public static Path moveContent(Path src, Path target, boolean isOverride) {
+		Assert.notNull(src, "Src path must be not null !");
+		Assert.notNull(target, "Target path must be not null !");
+		final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
+		// 自动创建目标的父目录
+		mkdir(target.getParent());
+		try {
+			return Files.move(src, target, options);
+		} catch (IOException e) {
+			// 移动失败，可能是跨分区移动导致的，采用递归移动方式
+			try {
+				Files.walkFileTree(src, new MoveVisitor(src, target, options));
+				// 移动后空目录没有删除，
+				del(src);
+			} catch (IOException e2) {
+				throw new IORuntimeException(e2);
+			}
+			return target;
+		}
+	}
+
+	public static Path mkdir(Path dir) {
+		if (null != dir && false == exists(dir, false)) {
+			try {
+				Files.createDirectories(dir);
+			} catch (IOException e) {
+				throw new IORuntimeException(e);
+			}
+		}
+		return dir;
+	}
+
+	public static boolean exists(Path path, boolean isFollowLinks) {
+		final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+		return Files.exists(path, options);
+	}
+
+	protected static void delFile(Path path) throws IOException {
+		try {
+			Files.delete(path);
+		} catch (AccessDeniedException e) {
+			if (false == path.toFile().delete()) {
+				throw e;
+			}
+		}
 	}
 }
