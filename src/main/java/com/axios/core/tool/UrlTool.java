@@ -607,4 +607,64 @@ public class UrlTool {
 		return null == str ? null == testStr : str.toString().toLowerCase().contains(testStr.toString().toLowerCase());
 	}
 
+	/**
+	 * [如果给定字符串不是以prefix开头的，在开头补充 prefix](If the given string does not start with prefix, prefix is supplemented at the beginning)
+	 * @description zh - 如果给定字符串不是以prefix开头的，在开头补充 prefix
+	 * @description en - If the given string does not start with prefix, prefix is supplemented at the beginning
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-06 21:27:41
+	 * @param str 被监测字符串
+	 * @param prefix 前缀
+	 * @param ignoreCase 是否忽略大小写
+	 * @param prefixes 前缀
+	 * @return java.lang.String
+	 */
+	public static String prependIfMissing(CharSequence str, CharSequence prefix, boolean ignoreCase, CharSequence... prefixes) {
+		if (str == null || isEmpty(prefix) || startWith(str, prefix, ignoreCase, false)) {
+			return null == str ? null : str.toString();
+		}
+		if (prefixes != null && prefixes.length > 0) {
+			for (final CharSequence s : prefixes) {
+				if (startWith(str, s, ignoreCase, false)) {
+					return str.toString();
+				}
+			}
+		}
+		return prefix.toString().concat(str.toString());
+	}
+
+	/**
+	 * [是否以指定字符串开头](Whether to start with the specified string)
+	 * @description zh - 是否以指定字符串开头
+	 * @description en - Whether to start with the specified string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-06 21:26:34
+	 * @param str 被监测字符串
+	 * @param prefix 开头字符串
+	 * @param ignoreCase 是否忽略大小写
+	 * @param ignoreEquals 是否忽略字符串相等的情况
+	 * @return boolean
+	 */
+	public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
+		if (null == str || null == prefix) {
+			if (false == ignoreEquals) {
+				return false;
+			}
+			return null == str && null == prefix;
+		}
+
+		boolean isStartWith;
+		if (ignoreCase) {
+			isStartWith = str.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
+		} else {
+			isStartWith = str.toString().startsWith(prefix.toString());
+		}
+
+		if (isStartWith) {
+			return (false == ignoreEquals) || (false == equals(str, prefix, ignoreCase));
+		}
+		return false;
+	}
 }
