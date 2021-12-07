@@ -18,6 +18,7 @@ import com.axios.core.assertion.Assert;
 import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.HttpBase;
+import com.axios.core.strem.HttpInputStream;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.file.FileTool;
 import com.axios.core.tool.http.HttpTool;
@@ -40,11 +41,11 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	/**
 	 * 持有连接对象
 	 */
-	protected Connection httpConnection;
+	public Connection httpConnection;
 	/**
 	 * Http请求原始流
 	 */
-	protected InputStream in;
+	public InputStream in;
 	/**
 	 * 是否异步，异步下只持有流，否则将在初始化时直接读取body内容
 	 */
@@ -52,7 +53,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	/**
 	 * 响应状态码
 	 */
-	protected int status;
+	public int status;
 	/**
 	 * 是否忽略读取Http响应体
 	 */
@@ -436,7 +437,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 			fileName = UrlTool.subSuf(path, path.lastIndexOf('/') + 1);
 			if (UrlTool.isBlank(fileName)) {
 				// 编码后的路径做为文件名
-				fileName = URLUtil.encodeQuery(path, StandardCharsets.UTF_8);
+				fileName = UrlTool.encodeQuery(path, StandardCharsets.UTF_8);
 			}
 		}
 		return FileTool.file(targetFileOrDir, fileName);
