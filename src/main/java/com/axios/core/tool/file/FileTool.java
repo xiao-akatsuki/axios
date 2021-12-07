@@ -1,38 +1,14 @@
 package com.axios.core.tool.file;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.RandomAccessFile;
-import java.io.Reader;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.jar.JarFile;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 import com.axios.core.assertion.Assert;
+import com.axios.core.tool.http.HttpTool;
 import com.axios.core.tool.io.IoTool;
 import com.axios.exception.IORuntimeException;
 
@@ -157,6 +133,22 @@ public class FileTool {
 		return true;
 	}
 
+	public static boolean clean(File directory) throws IORuntimeException {
+		if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
+			return true;
+		}
+
+		final File[] files = directory.listFiles();
+		if (null != files) {
+			for (File childFile : files) {
+				if (false == del(childFile)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public static boolean del(Path path) throws IORuntimeException {
 		if (Files.notExists(path)) {
 			return true;
@@ -231,6 +223,28 @@ public class FileTool {
 	public static boolean exists(Path path, boolean isFollowLinks) {
 		final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
 		return Files.exists(path, options);
+	}
+
+	public static File file(String path) {
+		if (null == path) {
+			return null;
+		}
+		return new File(path);
+	}
+
+	public static File file(File directory, String... names) {
+		Assert.notNull(directory, "directory must not be null");
+		if (HttpTool.isEmpty(names)) {
+			return directory;
+		}
+
+		File file = directory;
+		for (String name : names) {
+			if (null != name) {
+				file = file(file, name);
+			}
+		}
+		return file;
 	}
 
 	protected static void delFile(Path path) throws IOException {
