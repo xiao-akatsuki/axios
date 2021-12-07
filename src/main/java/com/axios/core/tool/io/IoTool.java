@@ -321,4 +321,8 @@ public class IoTool {
 		Assert.notNull(out, "OutputStream must be not null!");
 		return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
 	}
+
+	public static long copy(InputStream in, OutputStream out, int bufferSize, long count) throws IORuntimeException {
+		return new StreamCopier(bufferSize, count).copy(in, out);
+	}
 }
