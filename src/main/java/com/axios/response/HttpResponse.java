@@ -13,17 +13,20 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import com.axios.core.assertion.Assert;
 import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.connection.Connection;
 import com.axios.core.http.HttpBase;
 import com.axios.core.strem.HttpInputStream;
+import com.axios.core.tool.URLEncoder;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.file.FileTool;
 import com.axios.core.tool.http.HttpTool;
 import com.axios.core.tool.io.FastByteArrayOutputStream;
 import com.axios.core.tool.io.IoTool;
+import com.axios.core.tool.regular.RegularTool;
 import com.axios.exception.HttpException;
 import com.axios.exception.IORuntimeException;
 import com.axios.header.RequestHeader;
@@ -429,15 +432,12 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 		if (false == targetFileOrDir.isDirectory()) {
 			return targetFileOrDir;
 		}
-		// 从头信息中获取文件名
 		String fileName = getFileNameFromDisposition();
 		if (UrlTool.isBlank(fileName)) {
 			final String path = httpConnection.getUrl().getPath();
-			// 从路径中获取文件名
 			fileName = UrlTool.subSuf(path, path.lastIndexOf('/') + 1);
 			if (UrlTool.isBlank(fileName)) {
-				// 编码后的路径做为文件名
-				fileName = UrlTool.encodeQuery(path, StandardCharsets.UTF_8);
+				fileName = URLEncoder.QUERY.encode(path,StandardCharsets.UTF_8);
 			}
 		}
 		return FileTool.file(targetFileOrDir, fileName);
@@ -476,33 +476,24 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	 * @return com.axios.response.HttpResponse
 	 */
 	private HttpResponse init() throws HttpException {
-		// 获取响应状态码
 		try {
 			this.status = httpConnection.responseCode();
 		} catch (IOException e) {
 			if (false == (e instanceof FileNotFoundException)) {
 				throw new HttpException(e);
 			}
-			// 服务器无返回内容，忽略之
 		}
-		// 读取响应头信息
 		try {
 			this.headers = httpConnection.headers();
 		} catch (IllegalArgumentException e) {
-			// ignore
-			// StaticLog.warn(e, e.getMessage());
 		}
-		// 存储服务端设置的Cookie信息
 		GlobalCookieManager.store(httpConnection);
-		// 获取响应编码
 		final Charset charset = httpConnection.getCharset();
 		this.charsetFromResponse = charset;
 		if (null != charset) {
 			this.charset = charset;
 		}
-		// 获取响应内容流
 		this.in = new HttpInputStream(this);
-		// 同步情况下强制同步
 		return this.isAsync ? this : forceSync();
 	}
 
@@ -516,13 +507,10 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 	 * @return com.axios.response.HttpResponse
 	 */
 	private HttpResponse forceSync() {
-		// 非同步状态转为同步状态
 		try {
 			this.readBody(this.in);
 		} catch (IORuntimeException e) {
-			//noinspection StatementWithEmptyBody
 			if (e.getCause() instanceof FileNotFoundException) {
-				// 服务器无返回内容，忽略之
 			} else {
 				throw new HttpException(e);
 			}
@@ -551,7 +539,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 		}
 		final long contentLength = contentLength();
 		final FastByteArrayOutputStream out = new FastByteArrayOutputStream((int) contentLength);
-		copyBody(in, out, contentLength, null);
+		copyBody(in, out, contentLength);
 		this.bodyBytes = out.toByteArray();
 	}
 
@@ -598,7 +586,7 @@ public class HttpResponse extends HttpBase<HttpResponse> implements Closeable {
 		String fileName = null;
 		final String disposition = header(RequestHeader.CONTENT_DISPOSITION);
 		if (UrlTool.isNotBlank(disposition)) {
-			fileName = ReUtil.get("filename=\"(.*?)\"", disposition, 1);
+			fileName = RegularTool.get(Pattern.compile("filename=\"(.*?)\""), disposition, 1);
 			if (UrlTool.isBlank(fileName)) {
 				fileName = UrlTool.subAfter(disposition, "filename=", true);
 			}
