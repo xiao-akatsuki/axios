@@ -1,11 +1,20 @@
 package com.axios;
 
-import com.axios.ajax.Ajax;
-import com.axios.core.http.Http;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import com.axios.core.config.global.HttpGlobalConfig;
+import com.axios.core.http.HttpRequest;
 import com.axios.core.requestMethod.RequestMethod;
-import com.axios.header.Header;
-import com.axios.request.Request;
-import com.axios.response.Response;
 
 /**
  * [发送具体请求](Send specific request)
@@ -15,224 +24,106 @@ import com.axios.response.Response;
  * @author XiaoXunYao
  * @since 2021-11-11 18:49:03
  */
-public class Axios implements Ajax {
+public class Axios {
 
-    /** url */
-    private String url;
+	/** Encoding information in content type */
+	public static final Pattern CHARSET_PATTERN = Pattern.compile("charset\\s*=\\s*([a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
+	/** Encoding information matching meta tags */
+	public static final Pattern META_CHARSET_PATTERN = Pattern.compile("<meta[^>]*?charset\\s*=\\s*['\"]?([a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
 
-    /** method */
-    private String method;
+	/**
+	 * [是否是https请求](Is it an HTTPS request)
+	 * @description zh - 是否是https请求
+	 * @description en - Is it an HTTPS request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-08 20:36:45
+	 * @param url URL
+	 * @return boolean
+	 */
+	public static boolean isHttps(String url) {
+		return url.toLowerCase().startsWith("https:");
+	}
 
-    /** params */
-    private Request params;
+	/**
+	 * [是否是http请求](Is it an HTTP request)
+	 * @description zh - 是否是http请求
+	 * @description en - Is it an HTTP request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-08 20:38:07
+	 * @param url URL
+	 * @return boolean
+	 */
+	public static boolean isHttp(String url) {
+		return url.toLowerCase().startsWith("http:");
+	}
 
-    /** headers */
-    private Header headers;
+	/** ------------------- create ------------------- */
 
-    public Axios(){  }
+	public static HttpRequest createRequest(RequestMethod method, String url) {
+		return new HttpRequest(url).method(method);
+	}
 
-    /**
-     * [只是单纯发送一个get请求](Just send a get request)
-     * @description zh - 只是单纯发送一个get请求
-     * @description en - Just send a get request
-     * @version V1.0
-     * @author XiaoXunYao
-     * @since 2021-11-11 18:50:04
-     */
-    public Axios(String url) throws Exception{
-        this.url = url;
-        ajax();
-    }
+	public static HttpRequest createGet(String url) {
+		return createGet(url, false);
+	}
 
-    public Axios(String url, RequestMethod method) throws Exception{
-        this.url = url;
-        this.method = method.name();
-        ajax();
-    }
+	public static HttpRequest createGet(String url, boolean isFollowRedirects) {
+		return HttpRequest.get(url).setFollowRedirects(isFollowRedirects);
+	}
 
-    public Axios(String url, RequestMethod method,Request params) throws Exception{
-        this.url = url;
-        this.method = method.name();
-        this.params = params;
-        ajax();
-    }
+	public static HttpRequest createPost(String url) {
+		return HttpRequest.post(url);
+	}
 
-    public Axios(String url, RequestMethod method,Header headers) throws Exception{
-        this.url = url;
-        this.method = method.name();
-        this.headers = headers;
-        ajax();
-    }
+	public static HttpRequest createPut(String url) {
+		return HttpRequest.put(url);
+	}
 
-    public Axios(String url,Request params) throws Exception {
-        this.url = url;
-        this.params = params;
-        ajax();
-    }
+	public static HttpRequest createDelete(String url) {
+		return HttpRequest.delete(url);
+	}
 
-    public Axios(String url,Request params,Header headers) throws Exception {
-        this.url = url;
-        this.params = params;
-        this.headers = headers;
-        ajax();
-    }
+	public static HttpRequest createHeader(String url) {
+		return HttpRequest.head(url);
+	}
 
-    public Axios(String url, RequestMethod method, Request params, Header headers) throws Exception {
-        this.url = url;
-        this.method = method.name();
-        this.params = params;
-        this.headers = headers;
-        ajax();
-    }
+	public static HttpRequest createOptions(String url) {
+		return HttpRequest.options(url);
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public static HttpRequest createPatch(String url) {
+		return HttpRequest.patch(url);
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	/** ------------------- get ------------------- */
 
-    public String getMethod() {
-        return method;
-    }
+	public static String get(String urlString, Charset customCharset) {
+		return HttpRequest
+				.get(urlString)
+				.charset(customCharset)
+				.execute()
+				.body();
+	}
 
-    public void setMethod(RequestMethod method) {
-        this.method = method.name();
-    }
+	public static String get(String urlString) {
+		return get(urlString, HttpGlobalConfig.timeout);
+	}
 
-    public Request getParams() {
-        return params;
-    }
+	public static String get(String urlString, int timeout) {
+		return HttpRequest
+				.get(urlString)
+				.timeout(timeout)
+				.execute()
+				.body();
+	}
 
-    public void setParams(Request params) {
-        this.params = params;
-    }
-
-    public Header getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Header headers) {
-        this.headers = headers;
-    }
-
-    /** get ---------------------- get 请求 */
-
-
-    public static Axios get(String url){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.GET);
-        return axios;
-    }
-
-    public static Axios get(String url,Request params){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.GET);
-        axios.setParams(params);
-        return axios;
-    }
-
-    public static Axios get(String url,Request params,Header headers){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.GET);
-        axios.setParams(params);
-        axios.setHeaders(headers);
-        return axios;
-    }
-
-    /** post ---------------------- post 请求 */
-
-    public static Axios post(String url){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.POST);
-        return axios;
-    }
-
-    public static Axios post(String url,Request params){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.POST);
-        axios.setParams(params);
-        return axios;
-    }
-
-    public static Axios post(String url,Request params,Header headers){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.POST);
-        axios.setParams(params);
-        axios.setHeaders(headers);
-        return axios;
-    }
-
-    /** put ---------------------- put 请求 */
-
-    public static Axios put(String url){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.PUT);
-        return axios;
-    }
-
-    public static Axios put(String url,Request params){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.PUT);
-        axios.setParams(params);
-        return axios;
-    }
-
-    public static Axios put(String url,Request params,Header headers){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.PUT);
-        axios.setParams(params);
-        axios.setHeaders(headers);
-        return axios;
-    }
-
-    /** put ---------------------- put 请求 */
-
-    public static Axios delete(String url){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.DELETE);
-        return axios;
-    }
-
-    public static Axios delete(String url,Request params){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.DELETE);
-        axios.setParams(params);
-        return axios;
-    }
-
-    public static Axios delete(String url,Request params,Header headers){
-        Axios axios = new Axios();
-        axios.setUrl(url);
-        axios.setMethod(RequestMethod.DELETE);
-        axios.setParams(params);
-        axios.setHeaders(headers);
-        return axios;
-    }
-
-
-    @Override
-    public Response ajax() throws Exception {
-        switch (this.method) {
-            case "POST", "PUT" -> {
-                return Http.post(this.url, this.method, this.params, this.headers);
-            }
-            default -> {
-                return Http.get(this.url, this.method, this.params, this.headers);
-            }
-        }
-    }
-
+	public static String get(String urlString, Map<String, Object> paramMap) {
+		return HttpRequest
+				.get(urlString)
+				.form(paramMap)
+				.execute()
+				.body();
+	}
 }
