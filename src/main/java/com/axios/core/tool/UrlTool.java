@@ -27,6 +27,15 @@ import com.axios.exception.ConnException;
  */
 public class UrlTool {
 
+	/**
+	 * 用于建立十六进制字符的输出的小写字符数组
+	 */
+	private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+	/**
+	 * 用于建立十六进制字符的输出的大写字符数组
+	 */
+	private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
 	/** Content-Type */
 	public static final Pattern CHARSET_PATTERN = Pattern.compile("charset\\s*=\\s*([a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
 
@@ -712,5 +721,29 @@ public class UrlTool {
 		return str.toString().substring(fromIndexInclude, toIndexExclude);
 	}
 
+	public static String subAfter(CharSequence string, CharSequence separator, boolean isLastSeparator) {
+		if (isEmpty(string)) {
+			return null == string ? null : "";
+		}
+		if (separator == null) {
+			return "";
+		}
+		final String str = string.toString();
+		final String sep = separator.toString();
+		final int pos = isLastSeparator ? str.lastIndexOf(sep) : str.indexOf(sep);
+		if (-1 == pos || (string.length() - 1) == pos) {
+			return "";
+		}
+		return str.substring(pos + separator.length());
+	}
+
+	public static void appendHex(StringBuilder builder, byte b, boolean toLowerCase) {
+		final char[] toDigits = toLowerCase ? DIGITS_LOWER : DIGITS_UPPER;
+
+		int high = (b & 0xf0) >>> 4;//高位
+		int low = b & 0x0f;//低位
+		builder.append(toDigits[high]);
+		builder.append(toDigits[low]);
+	}
 
 }
