@@ -135,6 +135,30 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		this.header(GlobalHeaders.INSTANCE.headers);
 	}
 
+	public HttpResponse execute() {
+		return this.execute(false);
+	}
+
+	public HttpResponse execute(boolean isAsync) {
+		return doExecute(isAsync, this.interceptors);
+	}
+
+	public HttpRequest timeout(int milliseconds) {
+		setConnectionTimeout(milliseconds);
+		setReadTimeout(milliseconds);
+		return this;
+	}
+
+	public HttpRequest setConnectionTimeout(int milliseconds) {
+		this.connectionTimeout = milliseconds;
+		return this;
+	}
+
+	public HttpRequest setReadTimeout(int milliseconds) {
+		this.readTimeout = milliseconds;
+		return this;
+	}
+
 	/**
 	 * [设置全局默认的连接和读取超时时长](Set the global default connection and read timeout)
 	 * @description zh - 设置全局默认的连接和读取超时时长
@@ -370,6 +394,35 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 */
 	public HttpRequest setMethod(RequestMethod method) {
 		return method(method);
+	}
+
+	/**
+	 * [设置是否打开重定向](Sets whether redirection is turned on)
+	 * @description zh - 设置是否打开重定向
+	 * @description en - Sets whether redirection is turned on
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-08 20:41:04
+	 * @param isFollowRedirects 是否打开重定向
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setFollowRedirects(boolean isFollowRedirects) {
+		return setMaxRedirectCount(isFollowRedirects ? 2 : 0);
+	}
+
+	/**
+	 * [设置最大重定向次数](Set the maximum number of redirects)
+	 * @description zh - 设置最大重定向次数
+	 * @description en - Set the maximum number of redirects
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-08 20:41:48
+	 * @param maxRedirectCount 最大重定向次数
+	 * @return com.axios.core.http.HttpRequest
+	 */
+	public HttpRequest setMaxRedirectCount(int maxRedirectCount) {
+		this.maxRedirectCount = Math.max(maxRedirectCount, 0);
+		return this;
 	}
 
 	/**
