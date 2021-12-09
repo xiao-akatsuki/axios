@@ -159,6 +159,10 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		return this;
 	}
 
+	public HttpResponse executeAsync() {
+		return this.execute(true);
+	}
+
 	/**
 	 * [设置全局默认的连接和读取超时时长](Set the global default connection and read timeout)
 	 * @description zh - 设置全局默认的连接和读取超时时长
