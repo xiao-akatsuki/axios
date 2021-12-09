@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.axios.core.http.lang.Chain;
+import com.axios.response.HttpResponse;
 
 /**
  * [Http拦截器接口](HTTP interceptor interface)
@@ -24,9 +25,9 @@ public interface HttpInterceptor {
 	 * @version V1.0
 	 * @author XiaoXunYao
 	 * @since 2021-11-24 20:08:20
-	 * @param request HttpRequest
+	 * @param httpRequest HttpRequest
 	 */
-	void process(HttpRequest request);
+	void process(HttpRequest httpRequest);
 
 	/**
 	 * [拦截器链](Interceptor chain )
