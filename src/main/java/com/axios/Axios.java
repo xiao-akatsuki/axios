@@ -13,8 +13,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.axios.core.config.global.HttpGlobalConfig;
+import com.axios.core.http.HttpDownloader;
 import com.axios.core.http.HttpRequest;
 import com.axios.core.requestMethod.RequestMethod;
+import com.axios.core.tool.UrlTool;
+import com.axios.core.tool.file.FileTool;
 
 /**
  * [发送具体请求](Send specific request)
@@ -356,6 +359,237 @@ public class Axios {
 				.execute()
 				.body();
 	}
+
+	/** ------------------- post ------------------- */
+
+	/**
+	 * [发送PUT请求](Send put request)
+	 * @description zh - 发送PUT请求
+	 * @description en - Send put request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:01:12
+	 * @param url URL
+	 * @param paramMap 表单数据
+	 * @return java.lang.String
+	 */
+	public static String put(String url, Map<String, Object> paramMap) {
+		return put(url, paramMap, HttpGlobalConfig.timeout);
+	}
+
+	/**
+	 * [发送PUT请求](Send put request)
+	 * @description zh - 发送PUT请求
+	 * @description en - Send put request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:08:06
+	 * @param url URL
+	 * @param paramMap 表单数据
+	 * @param timeout 超时时间
+	 * @return java.lang.String
+	 */
+	public static String put(String url, Map<String, Object> paramMap, int timeout) {
+		return HttpRequest
+				.put(url)
+				.form(paramMap)
+				.timeout(timeout)
+				.execute()
+				.body();
+	}
+
+	/**
+	 * [发送PUT请求](Send put request)
+	 * @description zh - 发送PUT请求
+	 * @description en - Send put request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:08:53
+	 * @param url URL
+	 * @param body post表单数据
+	 * @return java.lang.String
+	 */
+	public static String put(String url, String body) {
+		return put(url, body, HttpGlobalConfig.timeout);
+	}
+
+	/**
+	 * [发送PUT请求](Send put request)
+	 * @description zh - 发送PUT请求
+	 * @description en - Send put request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:09:20
+	 * @param url URL
+	 * @param body post表单数据
+	 * @param timeout 超时时间
+	 * @return java.lang.String
+	 */
+	public static String put(String url, String body, int timeout) {
+		return HttpRequest
+				.put(url)
+				.timeout(timeout)
+				.body(body)
+				.execute()
+				.body();
+	}
+
+	/** ------------------- download ------------------- */
+
+	/**
+	 * [下载远程文本](Download remote text)
+	 * @description zh - 下载远程文本
+	 * @description en - Download remote text
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:31:19
+	 * @param url URL
+	 * @param customCharsetName 自定义的字符集
+	 * @return java.lang.String
+	 */
+	public static String downloadString(String url, String customCharsetName) {
+		return downloadString(url, UrlTool.isBlank(customCharsetName) ? Charset.defaultCharset() : Charset.forName(customCharsetName));
+	}
+
+	/**
+	 * [下载远程文本](Download remote text)
+	 * @description zh - 下载远程文本
+	 * @description en - Download remote text
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:32:28
+	 * @param url URL
+	 * @param customCharsetName 自定义的字符集
+	 * @return java.lang.String
+	 */
+	public static String downloadString(String url, Charset customCharset) {
+		return HttpDownloader.downloadString(url, customCharset);
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:32:54
+	 * @param url URL
+	 * @param dest 目标文件或目录
+	 * @return long
+	 */
+	public static long downloadFile(String url, String dest) {
+		return downloadFile(url, FileTool.file(dest));
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:36:01
+	 * @param url URL
+	 * @param dest 目标文件或目录
+	 * @return long
+	 */
+	public static long downloadFile(String url, File destFile) {
+		return downloadFile(url, destFile, -1);
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:37:21
+	 * @param url URL
+	 * @param destFile 目标文件或目录
+	 * @param timeout 超时时间
+	 * @return long
+	 */
+	public static long downloadFile(String url, File destFile, int timeout) {
+		return HttpDownloader.downloadFile(url, destFile, timeout);
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:37:58
+	 * @param url URL
+	 * @param dest 目标文件或目录
+	 * @return java.io.File
+	 */
+	public static File downloadFileFromUrl(String url, String dest) {
+		return downloadFileFromUrl(url, FileTool.file(dest));
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:38:23
+	 * @param url URL
+	 * @param destFile 目标文件或目录
+	 * @return java.io.File
+	 */
+	public static File downloadFileFromUrl(String url, File destFile) {
+		return downloadFileFromUrl(url, destFile, -1);
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:38:57
+	 * @param url URL
+	 * @param destFile 目标文件或目录
+	 * @param timeout 超时时间
+	 * @return java.io.File
+	 */
+	public static File downloadFileFromUrl(String url, File destFile, int timeout) {
+		return HttpDownloader.downloadForFile(url, destFile, timeout);
+	}
+
+	/**
+	 * [下载远程文件](Download remote file)
+	 * @description zh - 下载远程文件
+	 * @description en - Download remote file
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:39:21
+	 * @param url URL
+	 * @param out OutputStream
+	 * @param isCloseOut 将下载内容写到输出流中
+	 * @return long
+	 */
+	public static long download(String url, OutputStream out, boolean isCloseOut) {
+		return HttpDownloader.download(url, out, isCloseOut);
+	}
+
+	/**
+	 * [下载远程文件数据，支持30x跳转](Download remote file data and support 30x jump)
+	 * @description zh - 下载远程文件数据，支持30x跳转
+	 * @description en - Download remote file data and support 30x jump
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-09 19:40:02
+	 * @param url URL
+	 * @return byte[]
+	 */
+	public static byte[] downloadBytes(String url) {
+		return HttpDownloader.downloadBytes(url);
+	}
+
+
+
 
 
 }
