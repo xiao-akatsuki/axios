@@ -3,7 +3,6 @@ package com.axios;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.axios.core.config.global.GlobalCookieManager;
 import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.http.HttpDownloader;
 import com.axios.core.http.HttpRequest;
@@ -24,6 +24,9 @@ import com.axios.core.tool.URLEncoder;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.file.FileTool;
 import com.axios.core.tool.http.HttpTool;
+import com.axios.core.tool.io.IoTool;
+import com.axios.core.tool.regular.RegularTool;
+import com.axios.core.type.ContentType;
 
 /**
  * [发送具体请求](Send specific request)
@@ -788,8 +791,210 @@ public class Axios {
 		return params;
 	}
 
+	/** ------------------- form ------------------- */
 
+	/**
+	 * [将表单数据加到URL中](Add form data to URL)
+	 * @description zh - 将表单数据加到URL中
+	 * @description en - Add form data to URL
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:15:20
+	 * @param url URL
+	 * @param form 表单数据
+	 * @param charset 编码
+	 * @param isEncodeParams 是否对键和值做转义处理
+	 * @return java.lang.String
+	 */
+	public static String urlWithForm(String url, Map<String, Object> form, Charset charset, boolean isEncodeParams) {
+		if (isEncodeParams && UrlTool.contains(url, '?')) {
+			url = encodeParams(url, charset);
+		}
+		return urlWithForm(url, toParams(form, charset), charset, false);
+	}
 
+	/**
+	 * [将表单数据加到URL中](Add form data to URL)
+	 * @description zh - 将表单数据加到URL中
+	 * @description en - Add form data to URL
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:16:16
+	 * @param url URL
+	 * @param queryString 表单数据字符串
+	 * @param charset 编码
+	 * @param isEncode 是否对键和值做转义处理
+	 * @return java.lang.String
+	 */
+	public static String urlWithForm(String url, String queryString, Charset charset, boolean isEncode) {
+		if (UrlTool.isBlank(queryString)) {
+			if (UrlTool.contains(url, '?')) {
+				return isEncode ? encodeParams(url, charset) : url;
+			}
+			return url;
+		}
+		final StringBuilder urlBuilder = new StringBuilder();
+		int qmIndex = url.indexOf('?');
+		if (qmIndex > 0) {
+			urlBuilder.append(isEncode ? encodeParams(url, charset) : url);
+			if (false == UrlTool.endWith(url, '&')) {
+				urlBuilder.append('&');
+			}
+		} else {
+			urlBuilder.append(url);
+			if (qmIndex < 0) {
+				urlBuilder.append('?');
+			}
+		}
+		urlBuilder.append(isEncode ? encodeParams(queryString, charset) : queryString);
+		return urlBuilder.toString();
+	}
 
+	/** ------------------- Charset ------------------- */
 
+	/**
+	 * [从Http连接的头信息中获得字符集](Get the character set from the header information of the HTTP connection)
+	 * @description zh - 从Http连接的头信息中获得字符集
+	 * @description en - Get the character set from the header information of the HTTP connection
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:22:58
+	 * @param conn HTTP连接对象
+	 * @return java.lang.String
+	 */
+	public static String getCharset(HttpURLConnection conn) {
+		return conn == null ? null : getCharset(conn.getContentType());
+	}
+
+	/**
+	 * [从Http连接的头信息中获得字符集](Get the character set from the header information of the HTTP connection)
+	 * @description zh - 从Http连接的头信息中获得字符集
+	 * @description en - Get the character set from the header information of the HTTP connection
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:23:33
+	 * @param contentType Content-Type
+	 * @return java.lang.String
+	 */
+	public static String getCharset(String contentType) {
+		return UrlTool.isBlank(contentType) ? null : RegularTool.get(CHARSET_PATTERN, contentType, 1);
+	}
+
+	/** ------------------- String ------------------- */
+
+	/**
+	 * [从流中读取内容](Read content from stream)
+	 * @description zh - 从流中读取内容
+	 * @description en - Read content from stream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:28:13
+	 * @param in 输入流
+	 * @param charset 字符集
+	 * @param isGetCharsetFromContent 是否从返回内容中获得编码信息
+	 * @return java.lang.String
+	 */
+	public static String getString(InputStream in, Charset charset, boolean isGetCharsetFromContent) {
+		final byte[] contentBytes = IoTool.readBytes(in,true);
+		return getString(contentBytes, charset, isGetCharsetFromContent);
+	}
+
+	/**
+	 * [从流中读取内容](Read content from stream)
+	 * @description zh - 从流中读取内容
+	 * @description en - Read content from stream
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:29:08
+	 * @param contentBytes 内容byte数组
+	 * @param charset 编码
+	 * @param isGetCharsetFromContent 是否从返回内容中获得编码信息
+	 * @return java.lang.String
+	 */
+	public static String getString(byte[] contentBytes, Charset charset, boolean isGetCharsetFromContent) {
+		if (null == contentBytes) {
+			return null;
+		}
+		if (null == charset) {
+			charset = StandardCharsets.UTF_8;
+		}
+		String content = new String(contentBytes, charset);
+		if (isGetCharsetFromContent) {
+			final String charsetInContentStr = RegularTool.get(META_CHARSET_PATTERN, content, 1);
+			if (UrlTool.isNotBlank(charsetInContentStr)) {
+				Charset charsetInContent = null;
+				try {
+					charsetInContent = Charset.forName(charsetInContentStr);
+				} catch (Exception e) {
+					charsetInContent = UrlTool.containsIgnoreCase(charsetInContentStr, "utf-8") || UrlTool.containsIgnoreCase(charsetInContentStr, "utf8") ?
+										StandardCharsets.UTF_8 :
+										Charset.forName("GBK");
+				}
+				if (null != charsetInContent && false == charset.equals(charsetInContent)) {
+					content = new String(contentBytes, charsetInContent);
+				}
+			}
+		}
+		return content;
+	}
+
+	/** ------------------- MimeType ------------------- */
+
+	/**
+	 * [根据文件扩展名获得MimeType](Get mimeType from file extension)
+	 * @description zh - 根据文件扩展名获得MimeType
+	 * @description en - Get mimeType from file extension
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:33:04
+	 * @param filePath 文件路径或文件名
+	 * @param defaultValue 当获取MimeType为null时的默认值
+	 * @return java.lang.String
+	 */
+	public static String getMimeType(String filePath, String defaultValue) {
+		return HttpTool.defaultIfNull(getMimeType(filePath), defaultValue);
+	}
+
+	/**
+	 * [根据文件扩展名获得MimeType](Get mimeType from file extension)
+	 * @description zh - 根据文件扩展名获得MimeType
+	 * @description en - Get mimeType from file extension
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:33:55
+	 * @param filePath 文件路径或文件名
+	 * @return java.lang.String
+	 */
+	public static String getMimeType(String filePath) {
+		return FileTool.getMimeType(filePath);
+	}
+
+	/**
+	 * [从请求参数的body中判断请求的Content-Type类型](Judge the content type of the request from the body of the request parameter)
+	 * @description zh - 从请求参数的body中判断请求的Content-Type类型
+	 * @description en - Judge the content type of the request from the body of the request parameter
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:34:30
+	 * @param body 请求参数体
+	 * @return java.lang.String
+	 */
+	public static String getContentTypeByRequestBody(String body) {
+		final ContentType contentType = ContentType.get(body);
+		return (null == contentType) ? null : contentType.toString();
+	}
+
+	/** ------------------- cookie ------------------- */
+
+	/**
+	 * [清空cookie](Empty cookie)
+	 * @description zh - 清空cookie
+	 * @description en - Empty cookie
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 21:35:54
+	 */
+	public static void closeCookie() {
+		GlobalCookieManager.setCookieManager(null);
+	}
 }
