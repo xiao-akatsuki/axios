@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import com.axios.Axios;
+import com.axios.Conn;
 import com.axios.core.assertion.Assert;
 import com.axios.core.tool.io.FastByteArrayOutputStream;
 import com.axios.exception.HttpException;
@@ -50,7 +50,7 @@ public class HttpDownloader {
 	private static HttpResponse requestDownload(String url, int timeout) {
 		Assert.notBlank(url, "[url] is blank !");
 
-		final HttpResponse response = Axios.createGet(url, true)
+		final HttpResponse response = Conn.createGet(url, true)
 				.timeout(timeout)
 				.executeAsync();
 
