@@ -740,10 +740,33 @@ public class UrlTool {
 	public static void appendHex(StringBuilder builder, byte b, boolean toLowerCase) {
 		final char[] toDigits = toLowerCase ? DIGITS_LOWER : DIGITS_UPPER;
 
-		int high = (b & 0xf0) >>> 4;//高位
-		int low = b & 0x0f;//低位
+		int high = (b & 0xf0) >>> 4;
+		int low = b & 0x0f;
 		builder.append(toDigits[high]);
 		builder.append(toDigits[low]);
+	}
+
+	public static boolean contains(CharSequence str, char searchChar) {
+		return indexOf(str, searchChar, 0, -1) > -1;
+	}
+
+	public static int indexOf(final CharSequence str, char searchChar, int start, int end) {
+		if (isEmpty(str)) {
+			return -1;
+		}
+		final int len = str.length();
+		if (start < 0 || start > len) {
+			start = 0;
+		}
+		if (end > len || end < 0) {
+			end = len;
+		}
+		for (int i = start; i < end; i++) {
+			if (str.charAt(i) == searchChar) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }
