@@ -23,7 +23,7 @@ public interface Ajax {
      * @throws java.lang.Exception
      * @return com.xiaoHttp.response.Response
      */
-    Response ajax() throws Exception;
+    String ajax() throws Exception;
 
     /**
      * [定义完成请求之后的操作](Define the action after completing the request)
