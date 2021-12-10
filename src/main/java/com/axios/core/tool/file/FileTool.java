@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.nio.file.*;
 
 import com.axios.core.assertion.Assert;
@@ -164,6 +165,29 @@ public class FileTool {
 			throw new IORuntimeException(e);
 		}
 		return true;
+	}
+
+	public static String getMimeType(String filePath) {
+		String contentType = URLConnection.getFileNameMap().getContentTypeFor(filePath);
+		if (null == contentType) {
+			if (filePath.endsWith(".css")) {
+				contentType = "text/css";
+			} else if (filePath.endsWith(".js")) {
+				contentType = "application/x-javascript";
+			}
+		}
+		if (null == contentType) {
+			contentType = getMimeType(Paths.get(filePath));
+		}
+		return contentType;
+	}
+
+	public static String getMimeType(Path file) {
+		try {
+			return Files.probeContentType(file);
+		} catch (IOException e) {
+			throw new IORuntimeException(e);
+		}
 	}
 
 	public static Path rename(File file, String newName, boolean isOverride) {
