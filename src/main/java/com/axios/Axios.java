@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,13 @@ import java.util.regex.Pattern;
 import com.axios.core.config.global.HttpGlobalConfig;
 import com.axios.core.http.HttpDownloader;
 import com.axios.core.http.HttpRequest;
+import com.axios.core.http.url.UrlQuery;
 import com.axios.core.requestMethod.RequestMethod;
+import com.axios.core.rfc.RFC3986;
+import com.axios.core.tool.URLEncoder;
 import com.axios.core.tool.UrlTool;
 import com.axios.core.tool.file.FileTool;
+import com.axios.core.tool.http.HttpTool;
 
 /**
  * [发送具体请求](Send specific request)
@@ -586,6 +592,200 @@ public class Axios {
 	 */
 	public static byte[] downloadBytes(String url) {
 		return HttpDownloader.downloadBytes(url);
+	}
+
+	/** ------------------- param ------------------- */
+
+	/**
+	 * [将Map形式的Form表单数据转换为Url参数形式](Convert form data in map form to URL parameter form)
+	 * @description zh - 将Map形式的Form表单数据转换为Url参数形式
+	 * @description en - Convert form data in map form to URL parameter form
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:50:46
+	 * @param paramMap 表单的数据
+	 * @return java.lang.String
+	 */
+	public static String toParams(Map<String, ?> paramMap) {
+		return toParams(paramMap, StandardCharsets.UTF_8);
+	}
+
+	/**
+	 * [将Map形式的Form表单数据转换为Url参数形式](Convert form data in map form to URL parameter form)
+	 * @description zh - 将Map形式的Form表单数据转换为Url参数形式
+	 * @description en - Convert form data in map form to URL parameter form
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:51:56
+	 * @param paramMap 表单的数据
+	 * @param charset 字符集
+	 * @return java.lang.String
+	 */
+	public static String toParams(Map<String, ?> paramMap, Charset charset) {
+		return toParams(paramMap, charset, false);
+	}
+
+	/**
+	 * [将Map形式的Form表单数据转换为Url参数形式](Convert form data in map form to URL parameter form)
+	 * @description zh - 将Map形式的Form表单数据转换为Url参数形式
+	 * @description en - Convert form data in map form to URL parameter form
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:52:30
+	 * @param paramMap 表单的数据
+	 * @param charset 字符集
+	 * @param isFormUrlEncoded 是否为x-www-form-urlencoded模式
+	 * @return java.lang.String
+	 */
+	public static String toParams(Map<String, ?> paramMap, Charset charset, boolean isFormUrlEncoded) {
+		return UrlQuery
+				.of(paramMap, isFormUrlEncoded)
+				.build(charset);
+	}
+
+	/**
+	 * [对URL参数做编码，只编码键和值](Encode the URL parameters, only the key and value)
+	 * @description zh - 对URL参数做编码，只编码键和值
+	 * @description en - Encode the URL parameters, only the key and value
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:53:56
+	 * @param urlWithParams url和参数
+	 * @param charset 编码
+	 * @return java.lang.String
+	 */
+	public static String encodeParams(String urlWithParams, Charset charset) {
+		if (UrlTool.isBlank(urlWithParams)) {
+			return "";
+		}
+		String urlPart = null;
+		String paramPart;
+		final int pathEndPos = urlWithParams.indexOf('?');
+		if (pathEndPos > -1) {
+			urlPart = UrlTool.sub(urlWithParams, 0, pathEndPos);
+			paramPart = UrlTool.subSuf(urlWithParams, pathEndPos + 1);
+			if (UrlTool.isBlank(paramPart)) {
+				return urlPart;
+			}
+		} else if (false == UrlTool.contains(urlWithParams, '=')) {
+			return urlWithParams;
+		} else {
+			paramPart = urlWithParams;
+		}
+		paramPart = normalizeParams(paramPart, charset);
+		return UrlTool.isBlank(urlPart) ? paramPart : urlPart + "?" + paramPart;
+	}
+
+	/**
+	 * [标准化参数字符串](Normalized parameter string)
+	 * @description zh - 标准化参数字符串
+	 * @description en - Normalized parameter string
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:55:20
+	 * @param paramPart 参数字符串
+	 * @param charset 编码
+	 * @return java.lang.String
+	 */
+	public static String normalizeParams(String paramPart, Charset charset) {
+		final StringBuilder builder = new StringBuilder();
+		final int len = paramPart.length();
+		String name = null;
+		int pos = 0;
+		char c;
+		int i;
+		for (i = 0; i < len; i++) {
+			c = paramPart.charAt(i);
+			if (c == '=') {
+				if (null == name) {
+					name = (pos == i) ? "" : paramPart.substring(pos, i);
+					pos = i + 1;
+				}
+			} else if (c == '&') {
+				if (pos != i) {
+					if (null == name) {
+						name = paramPart.substring(pos, i);
+						builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append('=');
+					} else {
+						builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append('=')
+								.append(RFC3986.QUERY_PARAM_VALUE.encode(paramPart.substring(pos, i), charset)).append('&');
+					}
+					name = null;
+				}
+				pos = i + 1;
+			}
+		}
+		if (null != name) {
+			builder.append(URLEncoder.QUERY.encode(name, charset)).append('=');
+		}
+		if (pos != i) {
+			builder.append(
+					null == name && pos > 0 ?
+						"=" :
+						URLEncoder.QUERY.encode(paramPart.substring(pos, i), charset)
+			);
+		}
+		int lastIndex = builder.length() - 1;
+		if ('&' == builder.charAt(lastIndex)) {
+			builder.deleteCharAt(lastIndex);
+		}
+		return builder.toString();
+	}
+
+	/**
+	 * [将URL参数解析为Map](Resolve URL parameters to map)
+	 * @description zh - 将URL参数解析为Map
+	 * @description en - Resolve URL parameters to map
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:56:20
+	 * @param paramStr 参数字符串
+	 * @param charset 编码
+	 * @return java.util.Map<java.lang.CharSequence, java.lang.CharSequence>
+	 */
+	public static Map<CharSequence, CharSequence> decodeParamMap(String paramsStr, Charset charset) {
+		final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(paramsStr, charset).getQueryMap();
+		return HttpTool.isEmpty(queryMap) ? Collections.emptyMap() : queryMap;
+	}
+
+	/**
+	 * [将URL参数解析为Map](Resolve URL parameters to map)
+	 * @description zh - 将URL参数解析为Map
+	 * @description en - Resolve URL parameters to map
+	 * @description en -
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:57:59
+	 * @param paramStr 参数字符串
+	 * @param charset 编码
+	 * @return java.util.Map<java.lang.String, java.util.List<java.lang.String>>
+	 */
+	public static Map<String, List<String>> decodeParams(String paramsStr, String charset) {
+		return decodeParams(paramsStr, UrlTool.isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset));
+	}
+
+	/**
+	 * [将URL参数解析为Map](Resolve URL parameters to map)
+	 * @description zh - 将URL参数解析为Map
+	 * @description en - Resolve URL parameters to map
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-10 20:59:12
+	 * @param paramStr 参数字符串
+	 * @param charset 编码
+	 * @return java.util.Map<java.lang.String, java.util.List<java.lang.String>>
+	 */
+	public static Map<String, List<String>> decodeParams(String paramsStr, Charset charset) {
+		final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(paramsStr, charset).getQueryMap();
+		if (HttpTool.isEmpty(queryMap)) {
+			return Collections.emptyMap();
+		}
+		final Map<String, List<String>> params = new LinkedHashMap<>();
+		queryMap.forEach((key, value) -> {
+			final List<String> values = params.computeIfAbsent(null == key ? null : key.toString(), k -> new ArrayList<>(1));
+			values.add(null == value ? null : value.toString());
+		});
+		return params;
 	}
 
 
