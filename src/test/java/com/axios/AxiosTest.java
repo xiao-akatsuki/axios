@@ -9,4 +9,9 @@ import org.junit.Test;
 
 public class AxiosTest {
 
+	@Test
+	void test_Axios(){
+
+	}
+
 }
