@@ -1,6 +1,5 @@
 package com.axios.ajax;
 
-import com.axios.Axios;
 import com.axios.method.Method;
 import com.axios.response.Response;
 
