@@ -1,6 +1,11 @@
 package com.axios.ajax;
 
+import com.axios.Axios;
+import com.axios.core.requestMethod.RequestMethod;
+import com.axios.header.Header;
 import com.axios.method.Method;
+import com.axios.request.Body;
+import com.axios.request.Request;
 import com.axios.response.Response;
 
 /**
@@ -23,7 +28,7 @@ public interface Ajax {
      * @throws java.lang.Exception
      * @return com.xiaoHttp.response.Response
      */
-    String ajax() throws Exception;
+    Response ajax() throws Exception;
 
     /**
      * [定义完成请求之后的操作](Define the action after completing the request)
@@ -37,4 +42,28 @@ public interface Ajax {
     default void then(Method accept) throws Exception{
         accept.accept(ajax());
     }
+
+	/** ------------------- get ------------------- */
+
+	static Axios get(String url) throws Exception{
+		return new Axios(url);
+	}
+
+	static Axios get(String url,Header header) throws Exception {
+		return new Axios(url,RequestMethod.GET,header);
+	}
+
+	static Axios get(String url,Request param) throws Exception {
+		return new Axios(url,RequestMethod.GET,param);
+	}
+
+	static Axios get(String url,Request param,Header header) throws Exception{
+		return new Axios(url,RequestMethod.GET,param,header);
+	}
+
+	/** ------------------- post ------------------- */
+
+	static Axios post(String url,Body body,Header header) throws Exception {
+		return new Axios(url,RequestMethod.POST,body,header);
+	}
 }
