@@ -57,7 +57,7 @@ public class Axios implements Ajax {
 		this.param = param;
 		this.body = body;
 		this.header = header;
-//		ajax();
+		ajax();
 	}
 
 	/** ------------------- getter and setter ------------------- */
@@ -199,13 +199,45 @@ public class Axios implements Ajax {
 	 * @version V1.0
 	 * @author LZH
 	 * @date 15:43 2021/12/11
-	 * @param url
+	 * @param url URL
+	 * @throws java.lang.Exception
 	 * @return com.axios.Axios
 	 **/
 	public static Axios post(String url) throws Exception{
 		return post(url,null,null);
 	}
 
+	/**
+	 * [发送post请求](Send post request)
+	 * @description zh - 发送post请求
+	 * @description en - Send post request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:32:39
+	 * @param url URL
+	 * @param body 请求体
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios post(String url,Body body) throws Exception{
+		return post(url, body, null);
+	}
+
+	/**
+	 * [发送post请求](Send post request)
+	 * @description zh - 发送post请求
+	 * @description en - Send post request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:33:33
+	 * @param url URL
+	 * @param header 请求头
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios post(String url,Header header) throws Exception{
+		return post(url, null, header);
+	}
 
 	/**
 	 * [使用Axios发送Post请求](Use Axios to send Post request)
@@ -223,18 +255,150 @@ public class Axios implements Ajax {
 		return new Axios(url,RequestMethod.POST,body,header);
 	}
 
-	/** ------------------- post ------------------- */
+	/** ------------------- put ------------------- */
+
+	/**
+	 * [发送PUT请求](send PUT request)
+	 * @description zh - 发送PUT请求
+	 * @description en - send PUT request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:46:17
+	 * @param url URL
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios put(String url) throws Exception{
+		return put(url,null,null);
+	}
+
+	/**
+	 * [发送PUT请求](send PUT request)
+	 * @description zh - 发送PUT请求
+	 * @description en - send PUT request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:47:02
+	 * @param url URL
+	 * @param body 请求体
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios put(String url,Body body) throws Exception{
+		return put(url, body, null);
+	}
+
+	/**
+	 * [发送PUT请求](send PUT request)
+	 * @description zh - 发送PUT请求
+	 * @description en - send PUT request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:47:19
+	 * @param url URL
+	 * @param header 请求头
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios put(String url,Header header) throws Exception{
+		return put(url, null, header);
+	}
+
+	/**
+	 * [发送PUT请求](send PUT request)
+	 * @description zh - 发送PUT请求
+	 * @description en - send PUT request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:47:34
+	 * @param url URL
+	 * @param body 请求体
+	 * @param header 请求头
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios put(String url,Body body,Header header) throws Exception{
+		return new Axios(url,RequestMethod.PUT,body,header);
+	}
+
+	/** ------------------- delete ------------------- */
+
+	/**
+	 * [发送DELETE请求](send DELETE request)
+	 * @description zh - 发送DELETE请求
+	 * @description en - send DELETE request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:48:45
+	 * @param url URL
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios delete(String url) throws Exception{
+		return delete(url,null,null);
+	}
+
+	/**
+	 * [发送DELETE请求](send DELETE request)
+	 * @description zh - 发送DELETE请求
+	 * @description en - send DELETE request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:49:52
+	 * @param url URL
+	 * @param request 请求体
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios delete(String url,Request request) throws Exception{
+		return delete(url, request, null);
+	}
+
+	/**
+	 * [发送DELETE请求](send DELETE request)
+	 * @description zh - 发送DELETE请求
+	 * @description en - send DELETE request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:50:14
+	 * @param url URL
+	 * @param header 请求头
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios delete(String url,Header header) throws Exception{
+		return delete(url, null, header);
+	}
+
+	/**
+	 * [发送DELETE请求](send DELETE request)
+	 * @description zh - 发送DELETE请求
+	 * @description en - send DELETE request
+	 * @version V1.0
+	 * @author XiaoXunYao
+	 * @since 2021-12-11 20:50:28
+	 * @param url URL
+	 * @param request 请求体
+	 * @param header 请求头
+	 * @throws java.lang.Exception
+	 * @return com.axios.Axios
+	 */
+	public static Axios delete(String url,Request request,Header header) throws Exception{
+		return new Axios(url,RequestMethod.DELETE,request,header);
+	}
+
+	/** ------------------- body ------------------- */
 
 	/**
 	 * [获取Ajax的响应信息](Get Ajax response information)
 	 * @description zh - 获取Ajax的响应信息
 	 * @description en - Get Ajax response information
-	 * @version V1.0
+	 * @version V2.0
 	 * @author LZH
 	 * @date 15:44 2021/12/11
 	 * @return java.lang.String
 	 **/
-	public String body() throws Exception {
-		return ajax().toString();
+	public Response body() throws Exception {
+		return ajax();
 	}
 }
