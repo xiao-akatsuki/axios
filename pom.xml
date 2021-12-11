@@ -6,7 +6,7 @@
 
   <groupId>io.github.xiao-organization</groupId>
   <artifactId>axios</artifactId>
-  <version>0.0.1</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <description>A make it easier for java to send https</description>
 
