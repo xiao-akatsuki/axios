@@ -9,6 +9,14 @@ import com.axios.request.Request;
 import com.axios.response.HttpResponse;
 import com.axios.response.Response;
 
+/**
+ * [发送具体的HTTP请求](Send a specific HTTP request)
+ * @description zh - 发送具体的HTTP请求
+ * @description en - Send a specific HTTP request
+ * @version V1.0
+ * @author XiaoXunYao
+ * @since 2021-12-11 20:55:20
+ */
 public class Axios implements Ajax {
 
 	private String url;
