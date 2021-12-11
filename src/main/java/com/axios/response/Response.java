@@ -17,7 +17,6 @@ public class Response {
 
     private Map<String,List<String>> headers;
 
-    private String statusText;
 
     private String data;
 
@@ -27,12 +26,10 @@ public class Response {
     public Response(
                     int status,
                     Map<String,List<String>> headers,
-                    String statusText,
                     String data
     ){
         this.status = status;
         this.headers = headers;
-        this.statusText = statusText;
         this.data = data;
     }
 
@@ -42,10 +39,6 @@ public class Response {
 
     public void setHeaders(Map<String,List<String>> headers){
         this.headers = headers;
-    }
-
-    public void setStatusTest(String statusTest){
-        this.statusText = statusTest;
     }
 
     public void setData(String data){
@@ -60,14 +53,6 @@ public class Response {
         return headers;
     }
 
-    public String getStatusText() {
-        return statusText;
-    }
-
-    public void setStatusText(String statusText) {
-        this.statusText = statusText;
-    }
-
     public String getData() {
         return data;
     }
@@ -77,7 +62,6 @@ public class Response {
         return "Response{" +
                 "status=" + status +
                 ", headers=" + headers +
-                ", statusText='" + statusText + '\'' +
                 ", data='" + data + '\'' +
                 '}';
     }
