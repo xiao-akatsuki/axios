@@ -14,11 +14,11 @@ public class AxiosTest {
 
 	@Test
 	public void test1_Axios() throws Exception{
-		String url = "http://localhost:8080/demo/base/add";
-		Ajax.get(
-			url,
-			new Request().add("value", "this is axios text1"),
-			new Header().add("token", "this is axios text1")
+		String url = "http://192.168.1.109:9099/RollCall/people/axiosGet";
+		Axios.get(
+			url //,
+//			new Request().add("value", "this is axios text1"),
+//			new Header().add("token", "this is axios text1")
 		).then(value ->{
 			System.out.println(value);
 		});
@@ -45,6 +45,22 @@ public class AxiosTest {
 		HttpResponse value = HttpRequest.post(url).body(request.toBody()).execute();
 
 		System.out.println(value);
+	}
+
+	@Test
+	public void test4_Axios() throws Exception{
+		String url = "";
+
+		Axios.post(url).then(value ->{
+			System.out.println(value);
+		});
+	}
+
+	@Test
+	public void  test5_Axios() throws Exception{
+		String url = "http://192.168.1.109:9099/RollCall/people/axiosGet";
+		System.out.println(Axios.get(url).body());
+//		String value = Axios.get("");
 	}
 
 }
