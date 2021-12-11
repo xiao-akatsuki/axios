@@ -333,7 +333,7 @@ public class UrlTool {
 	 * @return java.net.URI
 	 */
 	public static URI toURI(URL url) throws ConnException {
-		return toURI(url);
+		return toURI(url.toString());
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class UrlTool {
 	 */
 	public static String removePrefix(CharSequence str, CharSequence prefix) {
 		if (isEmpty(str) || isEmpty(prefix)) {
-			return str.toString();
+			return str == null ? "" : str.toString();
 		}
 		final String str2 = str.toString();
 		if (str2.startsWith(prefix.toString())) {
@@ -578,7 +578,7 @@ public class UrlTool {
 	 */
 	public static String removeSuffix(CharSequence str, CharSequence suffix) {
 		if (isEmpty(str) || isEmpty(suffix)) {
-			return str.toString();
+			return str == null ? "" : str.toString();
 		}
 		final String str2 = str.toString();
 		if (str2.endsWith(suffix.toString())) {
