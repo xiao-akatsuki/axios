@@ -2,9 +2,9 @@ package com.axios;
 
 import java.util.HashMap;
 
-import com.axios.ajax.Ajax;
 import com.axios.core.http.HttpRequest;
 import com.axios.header.Header;
+import com.axios.request.Body;
 import com.axios.request.Request;
 import com.axios.response.HttpResponse;
 
@@ -49,10 +49,15 @@ public class AxiosTest {
 
 	@Test
 	public void test4_Axios() throws Exception{
-		String url = "";
+		String url = "http://localhost:8080/demo/base/remove";
 
-		Axios.post(url).then(value ->{
-			System.out.println(value);
+		Axios.post(
+			url,
+			new Body().add("name", "this is axios test4"),
+			new Header().add("token", "this is axios test4")
+		)
+		.then(value ->{
+			System.out.println(value.getData());
 		});
 	}
 
@@ -61,6 +66,22 @@ public class AxiosTest {
 		String url = "http://192.168.1.109:9099/RollCall/people/axiosGet";
 		System.out.println(Axios.get(url).body());
 //		String value = Axios.get("");
+	}
+
+	@Test
+	public void test6_Axios()throws Exception{
+		String url = "http://localhost:8080/demo/base/select";
+		Axios.put(url).then(value ->{
+			System.out.println(value);
+		});
+	}
+
+	@Test
+	public void test7_Axios()throws Exception{
+		String url = "http://localhost:8080/demo/base/update";
+		Axios.delete(url).then(value ->{
+			System.out.println(value);
+		});
 	}
 
 }
