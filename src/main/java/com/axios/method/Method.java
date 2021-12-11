@@ -22,6 +22,6 @@ public interface Method {
      * @since 2021-11-10 21:52:10
      * @param response 请求结束之后的参数
      */
-    void accept(String response);
+    void accept(Response response);
 
 }
