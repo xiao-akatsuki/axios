@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class Request {
 
-    private Map<String,String> params = new HashMap<>();
+    private Map<String,Object> params = new HashMap<>();
 
     /**
      * [添加参数](Add parameter)
@@ -26,12 +26,12 @@ public class Request {
      * @param value 值
      * @return com.xiaoHttp.request.Request
      */
-    public Request add(String key, String value) {
+    public Request add(String key, Object value) {
         this.params.put(key, value);
         return this;
     }
 
-    public Map<String,String> getParams(){
+    public Map<String,Object> getParams(){
         return this.params;
     }
 
@@ -65,9 +65,9 @@ public class Request {
         StringBuffer json = new StringBuffer();
         json.append("{");
 
-        for (Map.Entry<String, String> entry : this.params.entrySet()) {
+        for (Map.Entry<String, Object> entry : this.params.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue();
+            String value = entry.getValue().toString();
             json.append("\"").append(key).append("\":\"").append(value).append("\",");
         }
         json.deleteCharAt(json.length()-1);
