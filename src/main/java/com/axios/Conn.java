@@ -468,7 +468,7 @@ public class Conn {
 	 * @author XiaoXunYao
 	 * @since 2021-12-09 19:32:28
 	 * @param url URL
-	 * @param customCharsetName 自定义的字符集
+	 * @param customCharset 自定义的字符集
 	 * @return java.lang.String
 	 */
 	public static String downloadString(String url, Charset customCharset) {
@@ -498,7 +498,7 @@ public class Conn {
 	 * @author XiaoXunYao
 	 * @since 2021-12-09 19:36:01
 	 * @param url URL
-	 * @param dest 目标文件或目录
+	 * @param destFile 目标文件或目录
 	 * @return long
 	 */
 	public static long downloadFile(String url, File destFile) {
@@ -742,7 +742,7 @@ public class Conn {
 	 * @version V1.0
 	 * @author XiaoXunYao
 	 * @since 2021-12-10 20:56:20
-	 * @param paramStr 参数字符串
+	 * @param paramsStr 参数字符串
 	 * @param charset 编码
 	 * @return java.util.Map<java.lang.CharSequence, java.lang.CharSequence>
 	 */
@@ -759,7 +759,7 @@ public class Conn {
 	 * @version V1.0
 	 * @author XiaoXunYao
 	 * @since 2021-12-10 20:57:59
-	 * @param paramStr 参数字符串
+	 * @param paramsStr 参数字符串
 	 * @param charset 编码
 	 * @return java.util.Map<java.lang.String, java.util.List<java.lang.String>>
 	 */
@@ -774,7 +774,7 @@ public class Conn {
 	 * @version V1.0
 	 * @author XiaoXunYao
 	 * @since 2021-12-10 20:59:12
-	 * @param paramStr 参数字符串
+	 * @param paramsStr 参数字符串
 	 * @param charset 编码
 	 * @return java.util.Map<java.lang.String, java.util.List<java.lang.String>>
 	 */
