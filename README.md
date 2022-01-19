@@ -58,6 +58,10 @@ Java 1.8 and higher
 
 Other JRE implementations may work as well, but haven't been tested.
 
+## Contributors
+This project exists thanks to all the people who contribute.
+[![contributors](/contributors/contributors.svg)](https://github.com/xiao-akatsuki/axios/graphs/contributors)
+
 ## License
 
 Everything found in this repo is licensed under an [Apache-2.0 License](https://github.com/xiao-organization/axios/blob/master/LICENSE). See the `LICENSE` file for specifics.
