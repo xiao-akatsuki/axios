@@ -1,4 +1,4 @@
-<p align="center"><img width="120" src="/logo/logo.png" alt="axios logo"></p>
+<p align="center"><a href="https://xiao-akatsuki.github.io/axios.org/"><img width="120" src="/logo/logo.svg" alt="axios logo"></a></p>
 
 <p align="center">
 	<a href="https://mvnrepository.com/artifact/io.github.xiao-organization/axios">
