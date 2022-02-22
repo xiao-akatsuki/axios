@@ -60,7 +60,7 @@ Other JRE implementations may work as well, but haven't been tested.
 
 ## Contributors
 This project exists thanks to all the people who contribute.
-[![contributors](/contributors/contributors.svg)](https://github.com/xiao-akatsuki/axios/graphs/contributors)
+[![contributors](https://opencollective.com/java-axios/contributors.svg?width=890&button=false)](https://github.com/xiao-akatsuki/axios/graphs/contributors)
 
 ## License
 
